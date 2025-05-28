@@ -1,30 +1,27 @@
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Rendering;
+using static UnitsData.UnitData;
 
 public class Unit : MonoBehaviour
 {
-	GameObject m_gameController;
-	GameObject m_target;
+	[SerializeField]
+	UnitsData unitsData;
 
-	Grid m_grid;
 
-	void Start()
-    {
-		m_gameController = GameObject.FindGameObjectWithTag("GameController");
-		m_grid = m_gameController.GetComponent<Grid>();
-		m_grid.UpdateGrid(transform);
-    }
+	FriendLevel m_friendLevel;
+	string m_name;
+	int m_id;
+	int m_health;
+	int m_attack;
+	int m_defense;
 
-    void Update()
-    {
-		//if (Input.GetMouseButtonDown(0))
-		//{
-		//	Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		//	RaycastHit hit = new RaycastHit();
-		//	if(Physics.Raycast(ray,out hit))
-		//	{
-		//		m_target = hit.collider.gameObject;
-		//	}
-		//}
-		//Debug.Log(m_target);
-    }
+
+	private void Start()
+	{
+		int id = 0;
+		Debug.Log(unitsData.m_data[id].m_name);
+	}
+
 }
+

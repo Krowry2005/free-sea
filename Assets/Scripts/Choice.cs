@@ -4,7 +4,6 @@ public class Choice : MonoBehaviour
 {
 	GameObject m_mass;
 
-
 	public void OnChoice()
 	{
 		// タップした方向にカメラからRayを飛ばす

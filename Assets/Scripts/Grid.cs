@@ -1,80 +1,55 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-	static Grid Instance;
-
-	const int Width = 10;
-	const int Depth = 10;
-	const int Height = 1;
-
-	static Transform[,,] m_grid;
+	[SerializeField]
+	Transform m_parent;
 
 	[SerializeField]
-	GameObject m_mass;
+	GameObject m_possibleGrid;
 
-	private void Awake()
-	{
-		if(Instance == null && Instance != this)
-		{
-			Destroy(Instance);
-		}
-		else
-		{
-			Instance = this;
-			m_grid = new Transform[Width ,Height, Depth];
-			DontDestroyOnLoad(Instance);
-		}
-		for (int x = 0; x < Width; ++x)
-			for (int y = 0; y < Height; ++y)
-				for (int z = 0; z < Depth; ++z)
-				{
-					Instantiate(m_mass, new Vector3(x, y, z), Quaternion.identity);
-				}
-	}
+	[SerializeField]
+	GameObject m_impossibleGrid;
+
+	[Header("幅"),SerializeField] 
+	int m_width;
+
+	[Header("奥行"),SerializeField]
+	int m_height;
+
+	[SerializeField]
+	Vector3[] m_impossibleMass;
 
 	private void Start()
 	{
+		for (int x = 1; x < m_width; x++)
+			for(int z = 1; z < m_height; z++)
+			{
+				Vector3 pos = new Vector3(x,0,z);
 
-	}
-
-	public Vector3Int ScreentoGrid(Vector3 pos)
-	{
-		return new Vector3Int((int)pos.x,(int)pos.y,(int)pos.z);
-	}
-
-	public bool Placeable(Vector3 pos)
-	{
-		return (0 < (int)pos.x && (int)pos.x <= Width
-				&& 0 < (int)pos.y && (int)pos.y <= Height
-					&& 0 < (int)pos.z && (int)pos.z <= Depth)
-						&& m_grid[(int)pos.x, (int)pos.y, (int)pos.z] == null;
-	}
-
-	public void DeleteGrid(Vector3Int pos)
-	{
-		Destroy(m_grid[pos.x,pos.y,pos.z].gameObject);
-		m_grid[pos.x, pos.y, pos.z] = null;
-	}
-
-	public void UpdateGrid(Transform transform)
-	{
-		Debug.Log("ha?");
-		for(int y = 0; y < Height; ++y)
-			for(int x = 0; x < Width; ++x)
-				for(int z = 0; z < Depth; ++z)
-					if (m_grid[x, y, z] == null)
+				//今のマスが配置可能マスか走査
+				bool possible = true;
+				for (int i = 0; i < m_impossibleMass.Length; i++)
+				{
+					if (pos == m_impossibleMass[i])
 					{
-						if (m_grid[x, y, z].parent == transform)
-						{
-							m_grid[x, y, z] = null;
-						}
+						possible = false;
 					}
-		//foreach (Transform child in transform)
-		//{
-		//	Vector3 pos = ScreentoGrid(child.position);
-		//	m_grid[(int)pos.x, (int)pos.y, (int)pos.z] = child;
-		//}
+				}
+
+				//オブジェクトの生成と座標の確定
+				GameObject grid;
+				if (possible)
+				{
+					grid = Instantiate(m_possibleGrid, m_parent);
+				}
+				else
+				{
+					grid = Instantiate(m_impossibleGrid, m_parent);
+				}
+				grid.transform.position = pos;
+			}
 	}
 }
 
