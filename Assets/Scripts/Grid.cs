@@ -18,15 +18,27 @@ public class Grid : MonoBehaviour
 	[Header("奥行"),SerializeField]
 	int m_height;
 
-	[SerializeField]
+	[Header("不可能マス(※幅,奥行の半分まで)"),SerializeField]
 	Vector3[] m_impossibleMass;
+
+	Vector3 m_gridMass;
+
+	public Vector3 GridMass => m_gridMass;
 
 	private void Start()
 	{
+		Vector3 defaultPos = Vector3.zero;
+		defaultPos.x = -(m_width / 2);	//X座標の基点
+		defaultPos.z = -(m_height / 2);	//Y座標の基点
+
+		m_gridMass = new Vector3 (m_width ,0 , m_height);
+
 		for (int x = 1; x < m_width; x++)
 			for(int z = 1; z < m_height; z++)
 			{
-				Vector3 pos = new Vector3(x,0,z);
+				Vector3 pos = defaultPos;
+				pos.x += x;
+				pos.z += z;
 
 				//今のマスが配置可能マスか走査
 				bool possible = true;

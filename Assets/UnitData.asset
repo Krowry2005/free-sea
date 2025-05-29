@@ -12,10 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b719927db90e44d91d175d4546fd68, type: 3}
   m_Name: UnitData
   m_EditorClassIdentifier: 
-  m_data:
-  - m_friendLevel: 0
-    m_name: "\u30B9\u30E9\u30A4\u30E0"
-    m_id: 1
-    m_health: 50
-    m_attack: 5
-    m_defense: 1
+  data:
+  - friendLevel: 0
+    sprite: {fileID: 0}
+    name: Slime
+    id: 1
+    health: 10
+    attack: 1
+    defense: 1
+  - friendLevel: 0
+    sprite: {fileID: 0}
+    name: Slimezonbi
+    id: 2
+    health: 20
+    attack: 1
+    defense: 1
+  - friendLevel: 2
+    sprite: {fileID: 0}
+    name: Yusya
+    id: 1
+    health: 100
+    attack: 5
+    defense: 5
