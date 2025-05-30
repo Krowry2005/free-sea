@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8073086772555192299}
+  - component: {fileID: 9138006599011761072}
   m_Layer: 0
   m_Name: Rio
   m_TagString: Untagged
@@ -32,6 +33,21 @@ Transform:
   - {fileID: 9099099296081717086}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9138006599011761072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4132312772176831909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e845f6a559299604e9615926165d3bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitsData: {fileID: 11400000, guid: e9a8cb7baf626e049b98d3b2140a5c07, type: 2}
+  m_dataId: 1
+  m_friendLevel: 2
 --- !u!1001 &8776609558996467893
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42,7 +58,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8709317599752063756, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 648ffaa5c9a6a9745a09dafdd6ae1fd1, type: 2}
     - target: {fileID: -8679921383154817045, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d,
@@ -102,7 +118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5678284494352805590, guid: 24fc2c3e62c52bf4e9e63fd980b8e85d,
         type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 648ffaa5c9a6a9745a09dafdd6ae1fd1, type: 2}
     m_RemovedComponents: []

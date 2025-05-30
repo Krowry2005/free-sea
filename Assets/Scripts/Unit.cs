@@ -3,13 +3,15 @@ using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.Rendering;
-using static UnitsData.UnitData;
+using static UnitsSetting;
+using static UnitsSetting.UnitData;
 
 public class Unit : MonoBehaviour
 {
 	[SerializeField]
-	UnitsData unitsData;
+	UnitsSetting unitsData;
 
 	[SerializeField]
 	int m_dataId;
@@ -17,27 +19,46 @@ public class Unit : MonoBehaviour
 	[SerializeField]
 	FriendLevel m_friendLevel;
 
+	TurnManager m_turnManager;
+	GameController m_gameController;
+	Animator m_animator;
+
 	string m_name;
 	int m_id;
 	int m_health;
 	int m_attack;
 	int m_defense;
+	int m_agility;
 
-	public int HPValue => m_health;
+	public int Agility => m_agility;
+
+	public int HealthValue => m_health;
+
+	private void Awake()
+	{
+		GameObject gameController;
+		gameController = GameObject.FindGameObjectWithTag("GameController");
+		m_gameController = gameController.GetComponent<GameController>();
+		m_turnManager = gameController. GetComponent<TurnManager>();
+		m_animator = GetComponent<Animator>();
+	}
 
 	private void Start()
 	{
-		var slilmeData = unitsData.data.FirstOrDefault(unitData => unitData.id == m_dataId && unitData.friendLevel == m_friendLevel);
-		m_name = slilmeData.name;
-		m_health = slilmeData.health;
-		m_attack = slilmeData.attack;
-		m_defense = slilmeData.defense;
-		print(m_friendLevel);
-		print(m_name);
-		print(m_id);
-		print(m_health);
-		print(m_attack);
-		print(m_defense);
+		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
+		m_name = unitData.name;
+		m_health = unitData.health;
+		m_attack = unitData.attack;
+		m_defense = unitData.defense;
+		m_agility = unitData.agility;
+
+		//リストに加える
+		m_turnManager.SetList(gameObject);
+	}
+
+	public string UnitName()
+	{
+		return m_name;
 	}
 
 	public void OnDamage(int damage)
@@ -46,11 +67,31 @@ public class Unit : MonoBehaviour
 		m_health -= Calculation(damage);
 	}
 
+	public void OnDeath()
+	{
+		m_turnManager.DeleteList(gameObject);
+		m_animator.SetTrigger("Death");
+
+		//死亡メッセージ
+		Debug.Log(m_name + "は倒れた");
+	}
+
 	public int Calculation(int damage)
 	{
 		//防御力以下のダメージは1にする
-		if (damage < m_defense) damage = 1;
+		if (damage <= m_defense) damage = 1;
 		return damage -= m_defense;
+	}
+
+	public void ResetStatus()
+	{
+		//ステータスリセット
+		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
+		m_name = unitData.name;
+		m_health = unitData.health;
+		m_attack = unitData.attack;
+		m_defense = unitData.defense;
+		m_agility = unitData.agility;
 	}
 }
 

@@ -28,13 +28,13 @@ public class Grid : MonoBehaviour
 	private void Start()
 	{
 		Vector3 defaultPos = Vector3.zero;
-		defaultPos.x = -(m_width / 2);	//X座標の基点
-		defaultPos.z = -(m_height / 2);	//Y座標の基点
+		//defaultPos.x = -(m_width / 2);	//X座標の基点
+		//defaultPos.z = -(m_height / 2);	//Y座標の基点
 
 		m_gridMass = new Vector3 (m_width ,0 , m_height);
 
-		for (int x = 1; x < m_width; x++)
-			for(int z = 1; z < m_height; z++)
+		for (int x = 0; x < m_width; x++)
+			for(int z = 0; z < m_height; z++)
 			{
 				Vector3 pos = defaultPos;
 				pos.x += x;

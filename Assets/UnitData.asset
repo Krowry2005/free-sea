@@ -20,6 +20,7 @@ MonoBehaviour:
     health: 10
     attack: 1
     defense: 1
+    agility: 0
   - friendLevel: 0
     sprite: {fileID: 0}
     name: Slimezonbi
@@ -27,6 +28,7 @@ MonoBehaviour:
     health: 20
     attack: 1
     defense: 1
+    agility: 0
   - friendLevel: 2
     sprite: {fileID: 0}
     name: Yusya
@@ -34,3 +36,12 @@ MonoBehaviour:
     health: 100
     attack: 5
     defense: 5
+    agility: 0
+  - friendLevel: 2
+    sprite: {fileID: 0}
+    name: Yusya1
+    id: 2
+    health: 100
+    attack: 5
+    defense: 5
+    agility: 100

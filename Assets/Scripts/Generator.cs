@@ -1,5 +1,5 @@
 using UnityEngine;
-using static UnitsData.UnitData;
+using static UnitsSetting.UnitData;
 
 public class Generator : MonoBehaviour
 {
@@ -9,6 +9,10 @@ public class Generator : MonoBehaviour
 	GameObject m_neutralParent;
 	[SerializeField]
 	GameObject m_enemyParent;
+
+	public void Awake()
+	{
+	}
 
 	public void OnGenerate(GameObject unit, Vector3 initial, Quaternion quaternion, FriendLevel friendLevel)
 	{
