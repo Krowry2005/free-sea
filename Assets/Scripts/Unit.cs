@@ -32,6 +32,8 @@ public class Unit : MonoBehaviour
 
 	public int Agility => m_agility;
 
+	public FriendLevel FriendLevel => m_friendLevel;
+
 	public int HealthValue => m_health;
 
 	private void Awake()
@@ -41,6 +43,8 @@ public class Unit : MonoBehaviour
 		m_gameController = gameController.GetComponent<GameController>();
 		m_turnManager = gameController. GetComponent<TurnManager>();
 		m_animator = GetComponent<Animator>();
+		//リストに加える
+		m_turnManager.SetList(gameObject);
 	}
 
 	private void Start()
@@ -52,8 +56,6 @@ public class Unit : MonoBehaviour
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
 
-		//リストに加える
-		m_turnManager.SetList(gameObject);
 	}
 
 	public string UnitName()

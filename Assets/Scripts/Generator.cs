@@ -12,6 +12,7 @@ public class Generator : MonoBehaviour
 
 	public void Awake()
 	{
+
 	}
 
 	public void OnGenerate(GameObject unit, Vector3 initial, Quaternion quaternion, FriendLevel friendLevel)

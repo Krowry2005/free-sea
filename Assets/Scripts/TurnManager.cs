@@ -10,6 +10,7 @@ public class TurnManager : MonoBehaviour
 	public enum Phase
 	{
 		Start,
+		Enemy,
 		Select,
 		Action,
 		End,
@@ -17,22 +18,62 @@ public class TurnManager : MonoBehaviour
 	}
 
 	Phase m_phase;
+	GameObject m_turnUnit;
+	bool m_turnStart;
+	bool m_buttleEnd;
+	int m_round;
 
+	public GameObject TurnUnit => m_turnUnit;
 	public List<GameObject> UnitList = new List<GameObject>();
+	public List<GameObject> ReserveUnit;
 	public Phase GetPhase => m_phase;
+	public int Rount => m_round; 
 	
 	private void Start()
 	{
-		
+		m_buttleEnd = false;
+		m_turnUnit = UnitList.First();
+		m_phase = Phase.Start;
+		m_round = 0;
 	}
 
 	private void Update()
 	{
+		switch (m_phase)
+		{
+			case Phase.Start:
+				Debug.Log(m_turnUnit.name);
+				break;
 
+			case Phase.Enemy:
+				//今は仮置きとしてターン終了
+				NextPhase(Phase.End);
+				break;
+
+			case Phase.End:
+				//リストの先頭要素を控えのリストにコピーする
+				ReserveUnit.Add(UnitList.First());
+
+				//リストの最初の要素を削除
+				UnitList.RemoveAt(0);
+
+				//リストの新しい最初の要素を次のターンにする
+				m_turnUnit = UnitList.First();
+
+				//バフの消費
+
+				NextPhase(Phase.Start);
+				break;
+		}
+		//行動順をリセットし、ラウンドを消費
+		UnitList.AddRange(UnitList);
+		SortList();
+		m_round++;
 	}
 
 	public Phase NextPhase(Phase phase)
 	{
+		//別スクリプト下でもフェーズをいじれるようになる
 		return m_phase = phase;
 	}
 
@@ -41,13 +82,6 @@ public class TurnManager : MonoBehaviour
 		//リストに加えて速度順に並べ替える
 		UnitList.Add(list);
 		SortList();
-
-		foreach (GameObject unit in UnitList)
-		{
-			Unit m_unit;
-			unit.TryGetComponent(out m_unit);
-			Debug.Log(m_unit.UnitName());
-		}
 	}
 
 	public void DeleteList(GameObject list)

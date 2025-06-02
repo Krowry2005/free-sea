@@ -32,7 +32,6 @@ public class Grid : MonoBehaviour
 		//defaultPos.z = -(m_height / 2);	//YÀ•W‚ÌŠî“_
 
 		m_gridMass = new Vector3 (m_width ,0 , m_height);
-
 		for (int x = 0; x < m_width; x++)
 			for(int z = 0; z < m_height; z++)
 			{
