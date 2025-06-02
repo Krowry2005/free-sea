@@ -646,6 +646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnitList: []
+  ReserveUnit: []
 --- !u!114 &1626337314
 MonoBehaviour:
   m_ObjectHideFlags: 0

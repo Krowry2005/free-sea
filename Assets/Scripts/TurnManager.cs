@@ -32,7 +32,6 @@ public class TurnManager : MonoBehaviour
 	private void Start()
 	{
 		m_buttleEnd = false;
-		m_turnUnit = UnitList.First();
 		m_phase = Phase.Start;
 		m_round = 0;
 	}
@@ -42,7 +41,12 @@ public class TurnManager : MonoBehaviour
 		switch (m_phase)
 		{
 			case Phase.Start:
-				Debug.Log(m_turnUnit.name);
+				m_turnUnit = UnitList.First();
+				if(m_turnUnit.TryGetComponent(out Unit unit))
+				{
+					if(unit.FriendLevel == UnitsSetting.UnitData.FriendLevel.Enemy) NextPhase(Phase.Enemy);
+					else NextPhase(Phase.Select);
+				}
 				break;
 
 			case Phase.Enemy:
@@ -57,18 +61,20 @@ public class TurnManager : MonoBehaviour
 				//リストの最初の要素を削除
 				UnitList.RemoveAt(0);
 
-				//リストの新しい最初の要素を次のターンにする
-				m_turnUnit = UnitList.First();
-
 				//バフの消費
-
 				NextPhase(Phase.Start);
+
+				if(UnitList.Count == 0)
+				{
+					//行動順をリセットし、ラウンドを消費
+					UnitList.AddRange(ReserveUnit);
+					ReserveUnit.Clear();
+					SortList();
+					m_round++;
+					Debug.Log(m_round);
+				}
 				break;
 		}
-		//行動順をリセットし、ラウンドを消費
-		UnitList.AddRange(UnitList);
-		SortList();
-		m_round++;
 	}
 
 	public Phase NextPhase(Phase phase)

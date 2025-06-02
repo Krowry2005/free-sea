@@ -4,17 +4,21 @@ using UnityEngine.InputSystem;
 
 public class UnitAction : MonoBehaviour
 {
-	Vector3 m_targetPos;
 	Animator m_animator;
-	Rigidbody m_rigidbody;
 	TurnManager m_turnManager;
 
 	GameObject m_turnUnit;
+	GameObject m_targetMass;
+	Vector3 m_targetPos;
 
 	private void Awake()
 	{
 		m_turnManager = GetComponent<TurnManager>();
-		m_rigidbody = GetComponent<Rigidbody>();
+	}
+
+	private void Start()
+	{
+		
 	}
 
 	private void Update()
@@ -24,40 +28,40 @@ public class UnitAction : MonoBehaviour
 		switch (m_turnManager.GetPhase)
 		{
 			case TurnManager.Phase.Select:
-				if(Input.GetMouseButton(0))
+
+
+
+
+
+				if (Input.GetMouseButtonDown(0))
 				{
-					OnSelect(m_turnUnit.transform.position);
+					OnPick();
 				}
 				break;
 
 			case TurnManager.Phase.Action:
 				
-
-
+				
+				m_turnManager.NextPhase(TurnManager.Phase.End);
 				break;
 		}
 	}
 
 	public void OnPick()
 	{
-		// タップした方向にカメラからRayを飛ばす
+		// タップした場所にカメラからRayを飛ばす
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit = new RaycastHit();
 		if (Physics.Raycast(ray, out hit))
 		{
-			m_targetPos = hit.collider.gameObject.transform.position;
-			Debug.Log(m_targetPos);
+			//マスの選択
+			m_targetMass = hit.collider.gameObject;
+			m_targetMass.TryGetComponent(out Choice choice);
+			if(choice.Possible)
+			{
+				m_targetPos = m_targetMass.transform.position;
+				m_turnManager.NextPhase(TurnManager.Phase.Action);
+			}
 		}
 	}
-
-	public void OnSelect(Vector3 pos)
-	{
-		
-	}
-
-	public void OnMove(Vector3 position)
-	{
-		m_animator.SetBool("Move", true);
-	}
-
 }

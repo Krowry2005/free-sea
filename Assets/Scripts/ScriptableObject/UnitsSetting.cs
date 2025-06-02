@@ -23,6 +23,9 @@ public class UnitsSetting : ScriptableObject
 		//見た目の画像,アイコンも保持
 		public Sprite sprite;
 
+		//移動可能範囲
+
+
 		//ステータス
 		public string name;
 		public int id;
