@@ -1,7 +1,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class Grid : MonoBehaviour
+public class GridMass : MonoBehaviour
 {
 	[SerializeField]
 	Transform m_parent;
@@ -23,7 +23,7 @@ public class Grid : MonoBehaviour
 
 	Vector3 m_gridMass;
 
-	public Vector3 GridMass => m_gridMass;
+	public Vector3 Grid => m_gridMass;
 
 	private void Start()
 	{

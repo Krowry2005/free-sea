@@ -62,6 +62,8 @@ public class TurnManager : MonoBehaviour
 				UnitList.RemoveAt(0);
 
 				//バフの消費
+
+				//フェーズを最初に戻す
 				NextPhase(Phase.Start);
 
 				if(UnitList.Count == 0)
@@ -71,7 +73,6 @@ public class TurnManager : MonoBehaviour
 					ReserveUnit.Clear();
 					SortList();
 					m_round++;
-					Debug.Log(m_round);
 				}
 				break;
 		}
