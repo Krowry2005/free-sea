@@ -19,43 +19,47 @@ public class Unit : MonoBehaviour
 	[SerializeField]
 	FriendLevel m_friendLevel;
 
-	TurnManager m_turnManager;
+	UnitManager m_turnManager;
 	GameController m_gameController;
 	Animator m_animator;
 
 	string m_name;
 	int m_id;
+	Sprite m_sprite;
+	Vector3[] m_destination;
 	int m_health;
 	int m_attack;
 	int m_defense;
 	int m_agility;
 
-	public int Agility => m_agility;
 
 	public FriendLevel FriendLevel => m_friendLevel;
-
+	public Sprite Sprite => m_sprite; 
+	public Vector3[] Destination => m_destination;
 	public int HealthValue => m_health;
+	public int Agility => m_agility;
 
 	private void Awake()
 	{
 		GameObject gameController;
 		gameController = GameObject.FindGameObjectWithTag("GameController");
 		m_gameController = gameController.GetComponent<GameController>();
-		m_turnManager = gameController. GetComponent<TurnManager>();
+		m_turnManager = gameController. GetComponent<UnitManager>();
 		m_animator = GetComponent<Animator>();
-		//リストに加える
-		m_turnManager.SetList(gameObject);
 	}
 
 	private void Start()
 	{
 		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
 		m_name = unitData.name;
+		m_sprite = unitData.sprite;
+		m_destination = unitData.destination;
 		m_health = unitData.health;
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
-
+		//リストに加える
+		m_turnManager.SetList(gameObject);
 	}
 
 	public string UnitName()

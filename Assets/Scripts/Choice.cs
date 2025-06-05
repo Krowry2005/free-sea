@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Choice : MonoBehaviour
 {
-	public enum Mass
+	public enum MassAttribute
 	{
 		Possible,
 		ImPossible,
@@ -16,10 +16,20 @@ public class Choice : MonoBehaviour
 	bool m_possible;
 
 	[SerializeField]
-	Mass m_mass;
+	MassAttribute m_mass;
+
+	GridMass m_gridMass;
 
 	public bool Possible => m_possible;
-	public Mass Attribute => m_mass;
+	public MassAttribute Attribute => m_mass;
+
+	private void Awake()
+	{
+		GameObject grid;
+		grid = GameObject.FindGameObjectWithTag("Grid");
+		m_gridMass = grid.GetComponent<GridMass>();
+		m_gridMass.SetGrid(gameObject);
+	}
 
 	public void OnChoice()
 	{
@@ -30,5 +40,4 @@ public class Choice : MonoBehaviour
 	{
 		m_choiceBlock.SetActive(false);
 	}
-
 }

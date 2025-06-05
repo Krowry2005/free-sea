@@ -10,11 +10,6 @@ public class Generator : MonoBehaviour
 	[SerializeField]
 	GameObject m_enemyParent;
 
-	public void Awake()
-	{
-
-	}
-
 	public void OnGenerate(GameObject unit, Vector3 initial, Quaternion quaternion, FriendLevel friendLevel)
 	{
 		Transform parent = m_neutralParent.transform;

@@ -16,7 +16,6 @@ public class GameController : MonoBehaviour
 
 	Generator m_generator;
 
-
 	private void Awake()
 	{
 		m_generator = GetComponent<Generator>();
@@ -29,5 +28,4 @@ public class GameController : MonoBehaviour
 		 	m_generator.OnGenerate(m_ally[i], m_initialPosition[i], Quaternion.identity, FriendLevel.Ally);
 		}
 	}
-
 }

@@ -14,31 +14,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
   - friendLevel: 0
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 8bc5f3314f9c4ab40bc4f83e50c6b997, type: 3}
+    destination:
+    - {x: -1, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 1, y: 0, z: 1}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: -1, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 1, y: 0, z: -1}
     name: Slime
     id: 1
     health: 10
     attack: 1
     defense: 1
-    agility: 0
+    agility: 5
   - friendLevel: 0
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: b0fea94090d76c149ac8a4358cbbb4d4, type: 3}
+    destination:
+    - {x: -1, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 1, y: 0, z: 1}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: -1, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 1, y: 0, z: -1}
     name: Slimezonbi
     id: 2
     health: 20
     attack: 1
     defense: 1
-    agility: 0
+    agility: 20
   - friendLevel: 2
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 6480c79f7c5e0d24eb216252c001b429, type: 3}
+    destination:
+    - {x: -1, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 1, y: 0, z: 1}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: -1, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 1, y: 0, z: -1}
     name: Yusya
     id: 1
     health: 100
     attack: 5
     defense: 5
-    agility: 0
+    agility: 20
   - friendLevel: 2
-    sprite: {fileID: 0}
+    sprite: {fileID: 21300000, guid: 3f07c11b6e18cf343a9925d1b80d287d, type: 3}
+    destination:
+    - {x: -1, y: 0, z: 1}
+    - {x: 0, y: 0, z: 1}
+    - {x: 1, y: 0, z: 1}
+    - {x: -1, y: 0, z: 0}
+    - {x: 1, y: 0, z: 0}
+    - {x: -1, y: 0, z: -1}
+    - {x: 0, y: 0, z: -1}
+    - {x: 1, y: 0, z: -1}
     name: Yusya1
     id: 2
     health: 100
