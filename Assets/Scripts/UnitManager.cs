@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro.Examples;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnitManager : MonoBehaviour
 {
@@ -17,13 +16,17 @@ public class UnitManager : MonoBehaviour
 		Length,
 	}
 
+	[SerializeField]
+	Image[] m_image;
+
+	[SerializeField]
+	GameObject[] m_actionBar;
+
 	Phase m_phase;
 	GameObject m_turnUnit;
 	int m_round;
-	int m_listlength;
 
 	List<GameObject> m_unitList = new();            // Unitリスト
-	[SerializeField]
 	List<GameObject> m_speedList = new();			// 速度順に並べてあるリスト					
 	List<GameObject> m_reserveTurnList = new();		// 速度管理のために保管するリスト
 
@@ -32,6 +35,14 @@ public class UnitManager : MonoBehaviour
 	public int Rount => m_round; 
 	public List<GameObject> UnitList => m_unitList;
 	public List<GameObject> SpeedList => m_speedList;
+
+	private void Awake()
+	{
+		for (int i = 0; i < m_image.Length; i++)
+		{
+			m_image[i] = m_image[i].GetComponent<Image>();
+		}
+	}
 
 	private void Start()
 	{
@@ -47,10 +58,17 @@ public class UnitManager : MonoBehaviour
 				//ターンユニットの更新
 				m_turnUnit = m_speedList.First();
 
-				
+				//アクションバーの見た目を新しくする
+				for (int i = 0; i < m_image.Length; i++)
+				{	if(i >= m_speedList.Count())
+					{
+						m_actionBar[i].SetActive(false);
+					}
+					else m_image[i].sprite = GetSprite(i);
+				}
 
 				//ターンユニットが敵ならAIが動かす
-				if(m_turnUnit.TryGetComponent(out Unit unit))
+				if (m_turnUnit.TryGetComponent(out Unit unit))
 				{
 					if(unit.FriendLevel == UnitsSetting.UnitData.FriendLevel.Enemy) NextPhase(Phase.Enemy);
 					else NextPhase(Phase.Select);
@@ -77,6 +95,11 @@ public class UnitManager : MonoBehaviour
 					m_reserveTurnList.Clear();
 					SortList();
 					m_round++;
+
+					foreach(GameObject actionBar in m_actionBar)
+					{
+						actionBar.SetActive(true);
+					}
 				}
 
 				//フェーズを最初に戻す
@@ -107,7 +130,6 @@ public class UnitManager : MonoBehaviour
 				m_speedList.Add(list);
 			}
 		}
-		m_listlength = m_speedList.Count();
 	}
 	
 	public void DeleteList(GameObject list)
@@ -115,7 +137,6 @@ public class UnitManager : MonoBehaviour
 		UnitList.Remove(list);
 		m_speedList.Remove(list);
 		m_reserveTurnList.Remove(list);
-		m_listlength = m_speedList.Count();
 		SortList();
 	}
 
@@ -135,9 +156,8 @@ public class UnitManager : MonoBehaviour
 
 	public Sprite GetSprite(int num)
 	{
-		Sprite unitSprite;
 		Unit unit;
 		m_speedList[num].TryGetComponent(out unit);
-		return unitSprite = unit.Sprite;
+		return unit.Sprite;
 	}
 }

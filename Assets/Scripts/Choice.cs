@@ -40,4 +40,8 @@ public class Choice : MonoBehaviour
 	{
 		m_choiceBlock.SetActive(false);
 	}
+	public void SetPossible(bool possible)
+	{
+		m_possible = possible;
+	}
 }

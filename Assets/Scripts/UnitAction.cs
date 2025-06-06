@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -10,21 +11,16 @@ public class UnitAction : MonoBehaviour
 	[SerializeField]
 	GameObject m_mapBlock;
 
-	UnitManager m_turnManager;
+	UnitManager m_unitManager;
 	GridMass m_gridmass;
-
 	GameObject m_turnUnit;
 	GameObject m_targetMass;
-	Vector3 m_targetPos;
-
-	Vector3[] m_possibleMass;
 	bool m_move;
-
 	List<GameObject> m_moveList = new();
 
 	private void Awake()
 	{
-		m_turnManager = GetComponent<UnitManager>();
+		m_unitManager = GetComponent<UnitManager>();
 		m_gridmass = m_mapBlock.GetComponent<GridMass>();
 	}
 
@@ -36,8 +32,8 @@ public class UnitAction : MonoBehaviour
 	private void Update()
 	{
 		//現在のターンのUnitを更新
-		m_turnUnit = m_turnManager.TurnUnit;
-		switch (m_turnManager.GetPhase)
+		m_turnUnit = m_unitManager.TurnUnit;
+		switch (m_unitManager.GetPhase)
 		{
 			case UnitManager.Phase.Select:
 				OnSelect();
@@ -50,12 +46,12 @@ public class UnitAction : MonoBehaviour
 			case UnitManager.Phase.Action:
 				m_move = false;
 				
-				m_turnManager.NextPhase(UnitManager.Phase.End);
+				m_unitManager.NextPhase(UnitManager.Phase.End);
 				break;
 		}
 	}
 
-	public void OnPick()
+	private void OnPick()
 	{
 		// タップした場所にカメラからRayを飛ばす
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -64,41 +60,69 @@ public class UnitAction : MonoBehaviour
 		{
 			//マスの選択
 			m_targetMass = hit.collider.gameObject;
-			m_targetMass.TryGetComponent(out Choice choice);
-			if (choice.Possible)
+			foreach (GameObject list in m_moveList)
 			{
-				m_move = true;
-				m_targetPos = m_targetMass.transform.position;
-				m_turnUnit.transform.position = m_targetPos;
-				m_turnManager.NextPhase(UnitManager.Phase.Action);
-				OnRemove();
-			}
-		}
-	}
-
-	public void OnSelect()
-	{
-		if (m_move) return;
-		//移動可能マスを表示する
-		Unit unit = m_turnUnit.GetComponent<Unit>();
-		foreach (GameObject list in m_gridmass.GridList)
-		{
-		Choice choice = list.GetComponent<Choice>();
-			for (int i = 0; i < unit.Destination.Length; i++)
-			{
-				if (list.transform.position.x == unit.Destination[i].x + m_turnUnit.transform.position.x
-					&& list.transform.position.z == unit.Destination[i].z + m_turnUnit.transform.position.z)
+				//選択されたマスが移動可能なマスの時、移動する
+				if (Mathf.Approximately(list.transform.position.x, m_targetMass.transform.position.x)
+					&& Mathf.Approximately(list.transform.position.z, m_targetMass.transform.position.z))
 				{
-					choice.OnChoice();
-					m_moveList.Add(list);
+					m_move = true;
+
+					//今いるマスを移動可能マスに戻し、移動後マスを移動不可マスにする
+					foreach (GameObject grid in m_gridmass.GridList)
+					{
+						//現在のマスを移動不可にする
+						if (Mathf.Approximately(m_turnUnit.transform.position.x, grid.transform.position.x)
+							&& Mathf.Approximately(m_turnUnit.transform.position.z, grid.transform.position.z))
+						{
+							grid.GetComponent<Choice>().SetPossible(true);
+						}
+
+						//移動予定マスを移動不可マスにする
+						if (Mathf.Approximately(m_targetMass.transform.position.x, grid.transform.position.x)
+							&& Mathf.Approximately(m_targetMass.transform.position.z, grid.transform.position.z))	
+						{
+							grid.GetComponent<Choice>().SetPossible(false);
+						}
+					}
+					m_turnUnit.transform.position = m_targetMass.transform.position;
+					RoundVector3(m_turnUnit.transform.position);
+					m_unitManager.NextPhase(UnitManager.Phase.Action);
+					OnRemove();
+					return;
 				}
 			}
 		}
 	}
 
-	public void OnRemove()
+	private void OnSelect()
 	{
-		foreach(GameObject list in m_moveList)
+		if (m_move) return;
+
+		Unit unit = m_turnUnit.GetComponent<Unit>();
+		foreach (GameObject mapList in m_gridmass.GridList)
+		{
+			Choice choice = mapList.GetComponent<Choice>();
+			for (int i = 0; i < unit.Destination.Length; i++)
+			{
+				if (Mathf.Approximately( mapList.transform.position.x, m_turnUnit.transform.position.x + unit.Destination[i].x)
+					&&Mathf.Approximately( mapList.transform.position.z, m_turnUnit.transform.position.z + unit.Destination[i].z))
+				{
+					if (choice.Possible)
+					{
+						choice.OnChoice();
+						m_moveList.Add(mapList);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	private void OnRemove()
+	{
+		//移動可能マスの表示を外す
+		foreach (GameObject list in m_moveList)
 		{
 			Choice choice = list.GetComponent<Choice>();
 			choice.OnCancell();
@@ -106,10 +130,87 @@ public class UnitAction : MonoBehaviour
 		m_moveList.Clear();
 	}
 
-	//プレイヤーのポジションとマップのブロック座標比較をいちいち書くのめんどいから必要な奴だけ抽出
-	public Vector3 Extraction(Vector3 posWidth , Vector3 posHeight)
+	private Vector3Int RoundVector3(Vector3 position)
 	{
-		return new Vector3(posWidth.x ,posHeight.y, posWidth.z);
+		int x = (int)Mathf.Round((float)position.x);
+		int y = (int)Mathf.Round((float)position.y);
+		int z = (int)Mathf.Round((float)position.z); 
+	return new Vector3Int(x,y,z);
 	}
+
+
+
+	//public void OnPick()
+	//{
+	//	Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+	//	if (Physics.Raycast(ray, out RaycastHit hit))
+	//	{
+	//		m_targetMass = hit.collider.gameObject;
+	//		Vector3 targetPos = m_targetMass.transform.position;
+
+	//		foreach (GameObject list in m_moveList)
+	//		{
+	//			Vector3 listPos = list.transform.position;
+	//			if (Mathf.Approximately(listPos.x, targetPos.x) && Mathf.Approximately(listPos.z, targetPos.z))
+	//			{
+	//				m_move = true;
+	//				Vector3 currentPos = m_turnUnit.transform.position;
+
+	//				foreach (GameObject grid in m_gridmass.GridList)
+	//				{
+	//					Vector3 gridPos = grid.transform.position;
+	//					Choice choice = grid.GetComponent<Choice>();
+
+	//					if (Mathf.Approximately(gridPos.x, currentPos.x) && Mathf.Approximately(gridPos.z, currentPos.z))
+	//						choice.SetPossible(true);
+
+	//					if (Mathf.Approximately(gridPos.x, targetPos.x) && Mathf.Approximately(gridPos.z, targetPos.z))
+	//						choice.SetPossible(false);
+	//				}
+
+	//				m_turnUnit.transform.position = new Vector3(targetPos.x, m_turnUnit.transform.position.y, targetPos.z);
+	//				m_unitManager.NextPhase(UnitManager.Phase.Action);
+	//				OnRemove();
+	//				return;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//public void OnSelect()
+	//{
+	//	if (m_move) return;
+
+	//	Unit unit = m_turnUnit.GetComponent<Unit>();
+	//	Vector3 unitPos = m_turnUnit.transform.position;
+
+	//	foreach (GameObject mapList in m_gridmass.GridList)
+	//	{
+	//		Vector3 mapPos = mapList.transform.position;
+	//		Choice choice = mapList.GetComponent<Choice>();
+
+	//		foreach (Vector2 offset in unit.Destination)
+	//		{
+	//			float targetX = unitPos.x + offset.x;
+	//			float targetZ = unitPos.z + offset.y;
+
+	//			if (Mathf.Approximately(mapPos.x, targetX) && Mathf.Approximately(mapPos.z, targetZ) && choice.Possible)
+	//			{
+	//				choice.OnChoice();
+	//				m_moveList.Add(mapList);
+	//				break;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//public void OnRemove()
+	//{
+	//	foreach (GameObject list in m_moveList)
+	//	{
+	//		list.GetComponent<Choice>().OnCancell();
+	//	}
+	//	m_moveList.Clear();
+	//}
 
 }
