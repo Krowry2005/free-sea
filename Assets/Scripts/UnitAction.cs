@@ -36,6 +36,7 @@ public class UnitAction : MonoBehaviour
 		switch (m_unitManager.GetPhase)
 		{
 			case UnitManager.Phase.Select:
+				RoundVector3(m_turnUnit.transform.position);
 				OnSelect();
 				if(Input.GetMouseButtonDown(0))
 				{
@@ -86,7 +87,6 @@ public class UnitAction : MonoBehaviour
 						}
 					}
 					m_turnUnit.transform.position = m_targetMass.transform.position;
-					RoundVector3(m_turnUnit.transform.position);
 					m_unitManager.NextPhase(UnitManager.Phase.Action);
 					OnRemove();
 					return;
@@ -130,15 +130,10 @@ public class UnitAction : MonoBehaviour
 		m_moveList.Clear();
 	}
 
-	private Vector3Int RoundVector3(Vector3 position)
+	public Vector3 RoundVector3(Vector3 v)
 	{
-		int x = (int)Mathf.Round((float)position.x);
-		int y = (int)Mathf.Round((float)position.y);
-		int z = (int)Mathf.Round((float)position.z); 
-	return new Vector3Int(x,y,z);
+		return new Vector3(Mathf.Round(v.x),Mathf.Round(v.y), Mathf.Round(v.z));
 	}
-
-
 
 	//public void OnPick()
 	//{
