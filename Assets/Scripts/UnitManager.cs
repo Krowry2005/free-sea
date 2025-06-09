@@ -26,6 +26,8 @@ public class UnitManager : MonoBehaviour
 	GameObject m_turnUnit;
 	int m_round;
 
+	UnitAction m_unitAction;
+
 	List<GameObject> m_unitList = new();            // Unitリスト
 	List<GameObject> m_speedList = new();			// 速度順に並べてあるリスト					
 	List<GameObject> m_reserveTurnList = new();		// 速度管理のために保管するリスト
@@ -42,6 +44,8 @@ public class UnitManager : MonoBehaviour
 		{
 			m_image[i] = m_image[i].GetComponent<Image>();
 		}
+		
+		m_unitAction = GetComponent<UnitAction>();
 	}
 
 	private void Start()
@@ -101,6 +105,8 @@ public class UnitManager : MonoBehaviour
 						actionBar.SetActive(true);
 					}
 				}
+
+				m_unitAction.SetAction(UnitAction.Action.Choice);
 
 				//フェーズを最初に戻す
 				NextPhase(Phase.Start);
