@@ -23,7 +23,7 @@ public class UnitsSetting : ScriptableObject
 			Attack,
 			MaxHP,
 			Defense,
-			Agility,
+			Agility
 		}
 
 		//敵、味方、中立
@@ -43,10 +43,14 @@ public class UnitsSetting : ScriptableObject
 		public Vector3Int[] attackPos = { new(-1,0,1),new(0,0,1),new(1,0,1),new(-1,0,0),
 											new(1,0,0),new(-1,0,-1),new(0,0,-1),new(1,0,-1)};
 
+		//浮いているキャラクターか
+		public bool fly;
+
 		//ステータス
 		public string name;
 		public int id;
 		public int health;
+		public int mp;
 		public int attack;
 		public int defense;
 		public int agility;

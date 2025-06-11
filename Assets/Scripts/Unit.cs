@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
@@ -28,8 +29,11 @@ public class Unit : MonoBehaviour
 	Vector3Int[] m_destination;
 	Vector3Int[] m_attackPos;
 	AttackWay m_attackWay;
+	bool m_fly;
 	int MaxHealth;
 	int m_health;
+	int MaxMp;
+	int m_mp;
 	int m_attack;
 	int m_defense;
 	int m_agility;
@@ -39,9 +43,11 @@ public class Unit : MonoBehaviour
 	public Sprite Sprite => m_sprite; 
 	public Vector3Int[] Destination => m_destination;
 	public Vector3Int[] AttackPos => m_attackPos;
-
-	public int AttackValue => m_attack;
+	public string Name => m_name;
+	public bool Fly => m_fly;
+	public int MP => m_mp;
 	public int HealthValue => m_health;
+	public int AttackValue => m_attack;
 	public int Agility => m_agility;
 
 	private void Awake()
@@ -58,7 +64,9 @@ public class Unit : MonoBehaviour
 		m_sprite = unitData.sprite;
 		m_attackWay = unitData.attackWay;
 		m_destination = unitData.destination;
+		m_fly = unitData.fly;
 		MaxHealth = unitData.health;
+		MaxMp = unitData.mp;
 		m_attackPos = unitData.attackPos;
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
@@ -70,6 +78,9 @@ public class Unit : MonoBehaviour
 	{
 		//HPを最大値に
 		m_health = MaxHealth;
+
+		//MP
+		m_mp = MaxMp;
 
 		//ユニットリストに加える
 		m_turnManager.SetList(gameObject);
@@ -85,11 +96,6 @@ public class Unit : MonoBehaviour
 				grid.GetComponent<Choice>().SetPossible(false);
 			}
 		}
-	}
-
-	public string UnitName()
-	{
-		return m_name;
 	}
 
 	public int Magnification()
@@ -111,10 +117,17 @@ public class Unit : MonoBehaviour
 		return 0;
 	}
 
+	public void OnTurn()
+	//ターンが回ってきたら呼ばれる
+	{
+
+	}
+
 	public void Damage(int damage)
 	{
 		if (m_health <= 0) return;
 		m_health -= Calculation(damage);
+		Debug.Log(gameObject.name+"は"+Calculation(damage)+"ダメージを受けた" +"残りは"+m_health);
 	}
 
 	public void OnDeath()
@@ -129,19 +142,8 @@ public class Unit : MonoBehaviour
 	public int Calculation(int damage)
 	{
 		//防御力以下のダメージは1にする
-		if (damage <= m_defense) damage = 1;
+		if (damage <= m_defense) return 1;
 		return damage -= m_defense;
-	}
-
-	public void ResetStatus()
-	{
-		//ステータスリセット
-		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
-		m_name = unitData.name;
-		m_health = unitData.health;
-		m_attack = unitData.attack;
-		m_defense = unitData.defense;
-		m_agility = unitData.agility;
 	}
 }
 

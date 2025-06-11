@@ -23,9 +23,9 @@ public class GameController : MonoBehaviour
 
 	private void Start()
 	{
-		for(int i = 0; i < m_ally.Length; i++)
+		for (int i = 0; i < m_ally.Length; i++)
 		{
-		 	m_generator.OnGenerate(m_ally[i], m_initialPosition[i], Quaternion.identity, FriendLevel.Ally);
+			m_generator.OnGenerate(m_ally[i], m_initialPosition[i], Quaternion.identity, FriendLevel.Ally);
 		}
 	}
 }

@@ -105,9 +105,6 @@ public class UnitManager : MonoBehaviour
 						actionBar.SetActive(true);
 					}
 				}
-
-				m_unitAction.SetAction(UnitAction.Action.Choice);
-
 				//フェーズを最初に戻す
 				NextPhase(Phase.Start);
 				break;
@@ -138,7 +135,7 @@ public class UnitManager : MonoBehaviour
 		}
 	}
 	
-	public void DeleteList(GameObject list)
+	public void DeleteList(GameObject list)　//リストから抜ける
 	{
 		UnitList.Remove(list);
 		m_speedList.Remove(list);
@@ -146,7 +143,7 @@ public class UnitManager : MonoBehaviour
 		SortList();
 	}
 
-	public void SortList()
+	public void SortList()	//速度リストのソート
 	{
 		// GameObjectとSampleScriptのペアを先に作っておく（GetComponentは1回だけ）
 		var objectScriptPairs = m_speedList
