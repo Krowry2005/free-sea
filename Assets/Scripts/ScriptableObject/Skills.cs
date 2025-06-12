@@ -7,41 +7,62 @@ using UnityEngine.UI;
 
 [Serializable]
 [CreateAssetMenu(fileName = "Skill", menuName = "CreateSkill")]
-public class Skill : ScriptableObject
+public class Skills : ScriptableObject
 {
 	public enum Type
 	{
+		Attack,	
+		Move,
+		Guard,
+		Item,
 		Buff,
 		DeBuff,
 		Damage,
-		Move,
 		Heal,
 	}
 
+	//スキルのタイプ
 	[SerializeField]
 	private Type skillType;
 
+	//スキルのID
+	[SerializeField]
+	private int skillId;
+
+	//漢字のスキル名
 	[SerializeField]
 	private string kanjiName = "";
 
+	//ひらがなのスキル名
 	[SerializeField]
 	private string hiraganaName = "";
 
+	//消費MP 
+	[SerializeField]
+	int mp;
+
+	//情報
 	[SerializeField]
 	private string information = "";
+
+	//範囲
+	[SerializeField]
+	Vector3[] Range = { new (-1,0,1),new (0,0,1),new (1,0,1),new (-1,0,0),new (1,0,0),new (-1,0,-1),new (0,0,-1),new (1,0,-1)};
 
 	//　使用者のエフェクト
 	[SerializeField]
 	private GameObject skillUserEffect = null;
 
-	//　魔法を受ける側のエフェクト
-	[SerializeField]
-	private GameObject skillReceivingSideEffect = null;
-
 	//　スキルの種類を返す
 	public Type GetSkillType()
 	{
 		return skillType;
+	}
+
+	//スキルのID
+	public int GetID()
+	{
+		return skillId;
 	}
 
 	//　スキルの名前を返す
@@ -56,21 +77,27 @@ public class Skill : ScriptableObject
 		return hiraganaName;
 	}
 
+	//消費MP
+	public int GetMP()
+	{
+		return mp;
+	}
+
 	//　スキル情報を返す
 	public string GetInformation()
 	{
 		return information;
 	}
 
+	//範囲を返す
+	public Vector3[] GetRange()
+	{
+		return Range;
+	}
+
 	//　使用者のエフェクトを返す
 	public GameObject GetSkillUserEffect()
 	{
 		return skillUserEffect;
-	}
-
-	//　魔法を受ける側のエフェクトを返す
-	public GameObject GetSkillReceivingSideEffect()
-	{
-		return skillReceivingSideEffect;
 	}
 }

@@ -3,9 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.Rendering;
 using static UnitsSetting;
 using static UnitsSetting.UnitData;
 
@@ -21,14 +18,12 @@ public class Unit : MonoBehaviour
 	FriendLevel m_friendLevel;
 
 	UnitManager m_turnManager;
-	GameController m_gameController;
 	Animator m_animator;
 
 	string m_name;
 	Sprite m_sprite;
 	Vector3Int[] m_destination;
 	Vector3Int[] m_attackPos;
-	AttackWay m_attackWay;
 	bool m_fly;
 	int MaxHealth;
 	int m_health;
@@ -37,7 +32,6 @@ public class Unit : MonoBehaviour
 	int m_attack;
 	int m_defense;
 	int m_agility;
-	int m_magnification;
 
 	public FriendLevel FriendLevel => m_friendLevel;
 	public Sprite Sprite => m_sprite; 
@@ -54,7 +48,6 @@ public class Unit : MonoBehaviour
 	{
 		GameObject gameController;
 		gameController = GameObject.FindGameObjectWithTag("GameController");
-		m_gameController = gameController.GetComponent<GameController>();
 		m_turnManager = gameController. GetComponent<UnitManager>();
 		m_animator = GetComponent<Animator>();
 
@@ -62,7 +55,6 @@ public class Unit : MonoBehaviour
 		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
 		m_name = unitData.name;
 		m_sprite = unitData.sprite;
-		m_attackWay = unitData.attackWay;
 		m_destination = unitData.destination;
 		m_fly = unitData.fly;
 		MaxHealth = unitData.health;
@@ -71,7 +63,6 @@ public class Unit : MonoBehaviour
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
-		m_magnification = unitData.magnification;
 	}
 
 	private void Start()
@@ -96,25 +87,6 @@ public class Unit : MonoBehaviour
 				grid.GetComponent<Choice>().SetPossible(false);
 			}
 		}
-	}
-
-	public int Magnification()
-	{
-		switch (m_attackWay)
-		{
-			case AttackWay.Attack:
-				return Mathf.CeilToInt(m_attack * m_magnification / 100);
-
-			case AttackWay.Defense:
-				return Mathf.CeilToInt(m_defense * m_magnification / 100);
-
-			case AttackWay.MaxHP:
-				return Mathf.CeilToInt(MaxHealth * m_magnification / 100);
-
-			case AttackWay.Agility:
-				return Mathf.CeilToInt(m_agility * m_magnification / 100);
-		}
-		return 0;
 	}
 
 	public void OnTurn()

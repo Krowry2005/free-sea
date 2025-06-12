@@ -187,7 +187,7 @@ public class UnitAction : MonoBehaviour
 				//フレンドリーファイアの禁止
 				if (unit.FriendLevel != m_turnUnit.GetComponent<Unit>().FriendLevel)
 				{
-					unit.Damage(m_turnUnit.GetComponent<Unit>().Magnification());
+					
 				}
 				else Debug.Log("miss");
 			}
