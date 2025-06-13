@@ -47,7 +47,7 @@ public class Skills : ScriptableObject
 
 	//範囲
 	[SerializeField]
-	Vector3[] Range = { new (-1,0,1),new (0,0,1),new (1,0,1),new (-1,0,0),new (1,0,0),new (-1,0,-1),new (0,0,-1),new (1,0,-1)};
+	Vector3Int[] Range = { new (-1,0,1),new (0,0,1),new (1,0,1),new (-1,0,0),new (1,0,0),new (-1,0,-1),new (0,0,-1),new (1,0,-1)};
 
 	//　使用者のエフェクト
 	[SerializeField]
@@ -90,7 +90,7 @@ public class Skills : ScriptableObject
 	}
 
 	//範囲を返す
-	public Vector3[] GetRange()
+	public Vector3Int[] GetRange()
 	{
 		return Range;
 	}

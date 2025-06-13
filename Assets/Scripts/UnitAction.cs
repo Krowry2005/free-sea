@@ -59,12 +59,12 @@ public class UnitAction : MonoBehaviour
 				{
 					case Action.Move:
 						Unit moveUnit = m_turnUnit.GetComponent<Unit>();
-						OnDisplay(moveUnit.Destination, moveUnit.Fly);
+						OnDisplay(moveUnit.GetSkills()[0].GetRange(), moveUnit.Fly);
 						break;
 
 					case Action.Attack:
 						Unit attackUnit = m_turnUnit.GetComponent<Unit>();
-						OnDisplay(attackUnit.AttackPos, true);
+						OnDisplay(attackUnit.GetAttackSkills()[1].GetRange(), true);
 						break;
 
 					case Action.Item:
@@ -162,7 +162,7 @@ public class UnitAction : MonoBehaviour
 				// 移動時も整数座標にスナップ 
 				m_turnUnit.transform.position = new Vector3(
 					Mathf.RoundToInt(targetPos.x),
-					Mathf.RoundToInt(m_turnUnit.transform.position.y),
+					m_turnUnit.transform.position.y,	//ここはまとめたらだめ
 					Mathf.RoundToInt(targetPos.z)
 				);
 
@@ -187,11 +187,13 @@ public class UnitAction : MonoBehaviour
 				//フレンドリーファイアの禁止
 				if (unit.FriendLevel != m_turnUnit.GetComponent<Unit>().FriendLevel)
 				{
-					
+					Debug.Log("HIt?");
+					unit.Damage(m_turnUnit.GetComponent<Unit>().AttackValue * m_turnUnit.GetComponent<Unit>().GetAttackSkills()[0].GetMagnification() / 100);
 				}
 				else Debug.Log("miss");
 			}
 		}
+
 		//選択したマスに何もいなかったらどうにかする
 		else
 		{

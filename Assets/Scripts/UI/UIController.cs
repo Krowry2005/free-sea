@@ -6,6 +6,9 @@ public class UIController : MonoBehaviour
 	GameObject[] m_actionButton;
 
 	[SerializeField]
+	GameObject m_cameBackButton;
+
+	[SerializeField]
 	GameObject m_gameController;
 
 	[SerializeField]
@@ -24,6 +27,7 @@ public class UIController : MonoBehaviour
 		if(m_unitManager.GetPhase != UnitManager.Phase.Select)
 		{
 			m_actionFrame.SetActive(false);
+			m_cameBackButton.SetActive(true);
 			foreach(GameObject actionButton in m_actionButton)
 			{
 				actionButton.SetActive(false);
@@ -32,11 +36,11 @@ public class UIController : MonoBehaviour
 		else
 		{
 			m_actionFrame.SetActive(true);
+			m_cameBackButton.SetActive(false);
 			foreach(GameObject actionButton in m_actionButton)
 			{
 				actionButton.SetActive(true);
 			}
 		}
-			
 	}
 }

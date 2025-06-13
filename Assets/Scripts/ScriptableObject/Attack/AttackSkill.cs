@@ -51,4 +51,25 @@ public class AttackSkill : Skills
 	//フレンドリファイア
 	[SerializeField]
 	bool friendlyFire;
+
+	public AttackType GetAttackType()
+		{ return attackType; }
+
+	public AttackWay GetAttackWay()
+		{ return attackWay; }
+
+	public Vector3[] GetSkillRange()
+		{ return skillRange; }
+
+	public Vector3[] GetExtent()
+		{ return extent; }
+
+	public int GetMagnification()
+		{ return magnification; }
+
+	public int GetAttackNumTime() {
+		return attackNumTime; }
+
+	public bool GetFriendlyFire() {
+		return friendlyFire; }
 }

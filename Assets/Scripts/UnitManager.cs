@@ -85,6 +85,16 @@ public class UnitManager : MonoBehaviour
 				break;
 
 			case Phase.End:
+				//この時点で死んでいるものをリストに並べ、死亡させる
+				List<GameObject> DeadlyList = UnitList
+					.Where(unit => unit.GetComponent<Unit>().HealthValue <= 0)
+					.ToList();
+
+				foreach (GameObject deadList in DeadlyList)
+				{
+					deadList.GetComponent<Unit>().OnDeath();
+				}
+
 				//リストの先頭要素を控えのリストにコピーする
 				m_reserveTurnList.Add(m_speedList.First());
 

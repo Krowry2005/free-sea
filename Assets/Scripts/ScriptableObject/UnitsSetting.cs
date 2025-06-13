@@ -24,16 +24,12 @@ public class UnitsSetting : ScriptableObject
 		//見た目の画像,アイコンも保持
 		public Sprite sprite;
 
-		//移動可能範囲(初期化として周囲一マスのみ移動可能)
-		public Vector3Int[] destination = {new(-1,0,1),new(0,0,1),new(1,0,1),new(-1,0,0),
-											new(1,0,0),new(-1,0,-1),new(0,0,-1),new(1,0,-1)};
-
-		//通常攻撃範囲
-		public Vector3Int[] attackPos = { new(-1,0,1),new(0,0,1),new(1,0,1),new(-1,0,0),
-											new(1,0,0),new(-1,0,-1),new(0,0,-1),new(1,0,-1)};
-
+		//持っているスキル
 		[SerializeField]
 		Skills[] skill;
+
+		[SerializeField]
+		AttackSkill[] attacks;
 
 		//浮いているキャラクターか
 		public bool fly;
@@ -46,5 +42,11 @@ public class UnitsSetting : ScriptableObject
 		public int attack;
 		public int defense;
 		public int agility;
+
+		public Skills[] GetSkill()
+			{ return skill; }
+
+		public AttackSkill[] GetAttackSkill()
+			{ return attacks; }
 	}
 }

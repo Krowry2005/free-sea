@@ -22,8 +22,8 @@ public class Unit : MonoBehaviour
 
 	string m_name;
 	Sprite m_sprite;
-	Vector3Int[] m_destination;
-	Vector3Int[] m_attackPos;
+	Skills[] m_skill;
+	AttackSkill[] m_attackSkill;
 	bool m_fly;
 	int MaxHealth;
 	int m_health;
@@ -35,8 +35,6 @@ public class Unit : MonoBehaviour
 
 	public FriendLevel FriendLevel => m_friendLevel;
 	public Sprite Sprite => m_sprite; 
-	public Vector3Int[] Destination => m_destination;
-	public Vector3Int[] AttackPos => m_attackPos;
 	public string Name => m_name;
 	public bool Fly => m_fly;
 	public int MP => m_mp;
@@ -55,14 +53,14 @@ public class Unit : MonoBehaviour
 		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
 		m_name = unitData.name;
 		m_sprite = unitData.sprite;
-		m_destination = unitData.destination;
 		m_fly = unitData.fly;
 		MaxHealth = unitData.health;
 		MaxMp = unitData.mp;
-		m_attackPos = unitData.attackPos;
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
+		m_skill = unitData.GetSkill();
+		m_attackSkill = unitData.GetAttackSkill();
 	}
 
 	private void Start()
@@ -89,11 +87,11 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public void OnTurn()
-	//ターンが回ってきたら呼ばれる
-	{
+	public Skills[] GetSkills()
+	{ return m_skill; }
 
-	}
+	public AttackSkill[] GetAttackSkills()
+	{ return m_attackSkill; }
 
 	public void Damage(int damage)
 	{
@@ -105,10 +103,10 @@ public class Unit : MonoBehaviour
 	public void OnDeath()
 	{
 		m_turnManager.DeleteList(gameObject);
-		m_animator.SetTrigger("Death");
-
+		//m_animator.SetTrigger("Death");
 		//死亡メッセージ
 		Debug.Log(m_name + "は倒れた");
+		Destroy(gameObject,5);
 	}
 
 	public int Calculation(int damage)
