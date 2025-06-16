@@ -18,7 +18,7 @@ public class ActionSwitch : MonoBehaviour
 	public void OnAction() 
 	{
 		//フェーズをセレクトまで戻す
-		m_unitManager.NextPhase(UnitManager.Phase.Select);
+		m_unitManager.SetPhase(UnitManager.Phase.Select);
 
 		//移動可能表示をオフ
 		m_unitAction.OnRemove();

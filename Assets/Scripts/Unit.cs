@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +23,6 @@ public class Unit : MonoBehaviour
 
 	string m_name;
 	Sprite m_sprite;
-	Skills[] m_skill;
 	AttackSkill[] m_attackSkill;
 	bool m_fly;
 	int MaxHealth;
@@ -59,8 +59,6 @@ public class Unit : MonoBehaviour
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
-		m_skill = unitData.GetSkill();
-		m_attackSkill = unitData.GetAttackSkill();
 	}
 
 	private void Start()
@@ -86,9 +84,6 @@ public class Unit : MonoBehaviour
 			}
 		}
 	}
-
-	public Skills[] GetSkills()
-	{ return m_skill; }
 
 	public AttackSkill[] GetAttackSkills()
 	{ return m_attackSkill; }

@@ -74,14 +74,14 @@ public class UnitManager : MonoBehaviour
 				//ターンユニットが敵ならAIが動かす
 				if (m_turnUnit.TryGetComponent(out Unit unit))
 				{
-					if(unit.FriendLevel == UnitsSetting.UnitData.FriendLevel.Enemy) NextPhase(Phase.Enemy);
-					else NextPhase(Phase.Select);
+					if(unit.FriendLevel == UnitsSetting.UnitData.FriendLevel.Enemy) SetPhase(Phase.Enemy);
+					else SetPhase(Phase.Select);
 				}
 				break;
 
 			case Phase.Enemy:
 				//今は仮置きとしてターン終了
-				NextPhase(Phase.End);
+				SetPhase(Phase.End);
 				break;
 
 			case Phase.End:
@@ -116,12 +116,12 @@ public class UnitManager : MonoBehaviour
 					}
 				}
 				//フェーズを最初に戻す
-				NextPhase(Phase.Start);
+				SetPhase(Phase.Start);
 				break;
 		}
 	}
 
-	public Phase NextPhase(Phase phase)
+	public Phase SetPhase(Phase phase)
 	{
 		//別スクリプト下でもフェーズをいじれるようになる
 		return m_phase = phase;

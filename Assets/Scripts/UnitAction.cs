@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -17,6 +18,7 @@ public class UnitAction : MonoBehaviour
 		Attack,
 		Item,
 		Skill,
+		Information,
 
 		Length,
 	}
@@ -32,7 +34,6 @@ public class UnitAction : MonoBehaviour
 	GameObject m_turnUnit;
 
 	List<GameObject> m_viewList = new();
-	Vector3 m_targetPos;
 	bool m_move;
 	
 	private void Awake()
@@ -58,13 +59,13 @@ public class UnitAction : MonoBehaviour
 				switch (m_action)
 				{
 					case Action.Move:
-						Unit moveUnit = m_turnUnit.GetComponent<Unit>();
-						OnDisplay(moveUnit.GetSkills()[0].GetRange(), moveUnit.Fly);
+						
+						
 						break;
 
 					case Action.Attack:
-						Unit attackUnit = m_turnUnit.GetComponent<Unit>();
-						OnDisplay(attackUnit.GetAttackSkills()[1].GetRange(), true);
+						
+						
 						break;
 
 					case Action.Item:
@@ -74,19 +75,41 @@ public class UnitAction : MonoBehaviour
 					case Action.Skill:
 
 						break;
+
+					case Action.Information:
+						//すべてのマスが対象
+						foreach(GameObject posList in m_gridmass.GridList)
+						{
+							Choice choice = posList.GetComponent<Choice>();
+							choice.OnChoice();
+							m_viewList.Add(posList);
+							m_unitManager.SetPhase(UnitManager.Phase.Action);
+						}
+						break;
 				}
 				break;
 
 			case UnitManager.Phase.Action:
 				if (Input.GetMouseButtonDown(0))
 				{
-					OnPick();
+					if (OnPick() != null)
+					{
+						GameObject targetMass = OnPick();
+						OnAction(targetMass.transform.position);
+					}
+					else
+					{
+						//意味わからんとこ指定されたらセレクトフェーズに戻る
+						m_unitManager.SetPhase(UnitManager.Phase.Select);
+						m_action = Action.Choice;
+						OnRemove();
+					}
 				}
 				break;
 		}
 	}
 
-	private void OnDisplay(Vector3Int[] massArray, bool possible)
+	private void OnDisplay(Vector3Int[] massArray, bool possible, bool fly) 
 	//選択できるマスの表示 (選択可能範囲、移動不可マスを選択可能か)
 	{
 		foreach (GameObject mapList in m_gridmass.GridList)
@@ -103,48 +126,67 @@ public class UnitAction : MonoBehaviour
 					if (!choice.Possible && !possible) continue;
 					choice.OnChoice();
 					m_viewList.Add(mapList);
-					m_unitManager.NextPhase(UnitManager.Phase.Action);
+					m_unitManager.SetPhase(UnitManager.Phase.Action);
 					break;
 				}
 			}
 		}
 	}
 
-	private void OnPick()
-	//移動先の選択
+	private GameObject OnPick()
 	{
 		// タップした場所にカメラからRayを飛ばす
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit = new RaycastHit();
 		if (Physics.Raycast(ray, out hit))
 		{
-			// マスの選択
-			Vector3 targetPos = hit.collider.gameObject.transform.position;
-			foreach(GameObject list in m_viewList)
+			//今のところマス以外に当たり判定つけないけど一応
+			if(hit.collider.gameObject.tag == "Grid")
 			{
-				//押されたマスが有効マスである場合
-				if(SameGridPosition(targetPos,list.transform.position))
+				// マスの選択
+				return hit.collider.gameObject;
+			}
+			return null;
+		}
+		else return null;
+	}
+
+	private void OnAction(Vector3 targetPos)
+	{
+		foreach (GameObject viewList in m_viewList)
+		{
+			//押されたマスが有効マスである場合
+			if (SameGridPosition(targetPos, viewList.transform.position))
+			{
+				switch (m_action)
 				{
-					switch (m_action)
-					{
-						case Action.Move:
-							OnMove(targetPos);
-							break;
+					case Action.Move:
+						OnMove(targetPos);
+						break;
 
-						case Action.Attack:
-							OnAttack(targetPos);
-							break;
+					case Action.Attack:
+						OnAttack(targetPos);
+						break;
 
-						case Action.Item:
+					case Action.Item:
 
-							break;
+						break;
 
-						case Action.Skill:
+					case Action.Skill:
 
-							break;
-					}
-					break;
+						break;
+
+					case Action.Information:
+						foreach (GameObject unitList in m_unitManager.UnitList)
+						{
+							if(SameGridPosition(targetPos,unitList.transform.position))
+							{
+								Debug.Log(unitList.transform.position);
+							}
+						}
+						break;
 				}
+				break;
 			}
 		}
 	}
@@ -166,7 +208,7 @@ public class UnitAction : MonoBehaviour
 					Mathf.RoundToInt(targetPos.z)
 				);
 
-				m_unitManager.NextPhase(UnitManager.Phase.End);
+				m_unitManager.SetPhase(UnitManager.Phase.End);
 				m_action = Action.Choice;
 				return;
 			}
@@ -190,7 +232,11 @@ public class UnitAction : MonoBehaviour
 					Debug.Log("HIt?");
 					unit.Damage(m_turnUnit.GetComponent<Unit>().AttackValue * m_turnUnit.GetComponent<Unit>().GetAttackSkills()[0].GetMagnification() / 100);
 				}
-				else Debug.Log("miss");
+				else
+				{
+					Debug.Log("miss");
+
+				}
 			}
 		}
 
@@ -201,7 +247,7 @@ public class UnitAction : MonoBehaviour
 		}
 
 		OnRemove();
-		m_unitManager.NextPhase(UnitManager.Phase.End);
+		m_unitManager.SetPhase(UnitManager.Phase.End);
 		m_action = Action.Choice;
 	}
 

@@ -21,25 +21,27 @@ public class GridMass : MonoBehaviour
 	[Header("不可能マス(※幅,奥行の半分まで)"),SerializeField]
 	Vector3[] m_impossibleMass;
 
-	Vector3 m_gridMass;
+	Vector3Int m_gridMass;
 
 	List<GameObject> m_gridList = new();
+	List<Vector3Int> m_posList = new();
 
 	public Vector3 Grid => m_gridMass;
 
 	public List<GameObject> GridList => m_gridList;
+	public List<Vector3Int> PosList => m_posList;
 
-	private void Start()
+	private void Awake()
 	{
-		Vector3 defaultPos = Vector3.zero;
-		//defaultPos.x = -(m_width / 2);	//X座標の基点
-		//defaultPos.z = -(m_height / 2);	//Y座標の基点
+		Vector3Int defaultPos = Vector3Int.zero;
+		//defaultPos.x = -(m_width / 2);  //X座標の基点
+		//defaultPos.z = -(m_height / 2); //Y座標の基点
 
-		m_gridMass = new Vector3 (m_width ,0 , m_height);
+		m_gridMass = new Vector3Int (m_width ,0 , m_height);
 		for (int x = 0; x < m_width; x++)
 			for(int z = 0; z < m_height; z++)
 			{
-				Vector3 pos = defaultPos;
+				Vector3Int pos = defaultPos;
 				pos.x += x;
 				pos.z += z;
 
@@ -64,6 +66,7 @@ public class GridMass : MonoBehaviour
 					grid = Instantiate(m_impossibleGrid, m_parent);
 				}
 				grid.transform.position = pos;
+				m_posList.Add(pos);
 			}
 	}
 
