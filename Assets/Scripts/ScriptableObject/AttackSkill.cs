@@ -10,7 +10,6 @@ public class AttackSkill : Skills
 		Nomal,		//‰½‚Ì•Ï“N‚à‚È‚¢’ÊíUŒ‚
 		Continuou,  //˜A‘±UŒ‚
 		Extent,     //”ÍˆÍUŒ‚
-		MoveAttack,
 
 		Other,
 	}
@@ -31,15 +30,6 @@ public class AttackSkill : Skills
 	[SerializeField]
 	AttackWay attackWay;
 
-	//UŒ‚‚ª“Í‚­‹——£
-	[SerializeField]
-	Vector3[] skillRange = { new(-1,0,1),new(0,0,1),new(1,0,1),new(-1,0,0),
-											new(1,0,0),new(-1,0,-1),new(0,0,-1),new(1,0,-1)};
-
-	//UŒ‚‚Ì”ÍˆÍ
-	[SerializeField]
-	Vector3[] extent;
-
 	//UŒ‚”{—¦
 	[SerializeField]
 	int magnification;
@@ -57,12 +47,6 @@ public class AttackSkill : Skills
 
 	public AttackWay GetAttackWay()
 		{ return attackWay; }
-
-	public Vector3[] GetSkillRange()
-		{ return skillRange; }
-
-	public Vector3[] GetExtent()
-		{ return extent; }
 
 	public int GetMagnification()
 		{ return magnification; }
