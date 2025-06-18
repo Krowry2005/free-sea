@@ -5,7 +5,6 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.LowLevelPhysics;
 using UnityEngine.Rendering.Universal;
 
@@ -35,6 +34,8 @@ public class UnitAction : MonoBehaviour
 
 	List<GameObject> m_viewList = new();
 	bool m_move;
+
+	public Action GetAction => m_action;
 	
 	private void Awake()
 	{
@@ -71,7 +72,8 @@ public class UnitAction : MonoBehaviour
 						break;
 
 					case Action.Skill:
-
+						//スキルウィンドウを開いて操作
+						
 						break;
 
 					case Action.Information:

@@ -11,18 +11,23 @@ public class UIController : MonoBehaviour
 	[SerializeField]
 	GameObject m_gameController;
 
-	UnitManager m_unitManager;
+	[SerializeField]
+	GameObject m_skillWindow;
 
+	UnitManager m_unitManager;
+	UnitAction m_unitAction;
 
 	private void Awake()
 	{
 		m_unitManager = m_gameController.GetComponent<UnitManager>();
+		m_unitAction = m_gameController.GetComponent <UnitAction>();
 	}
 
 	private void Update()
 	{
 		if(m_unitManager.GetPhase != UnitManager.Phase.Select)
 		{
+			m_skillWindow.SetActive(false);
 			m_cameBackButton.SetActive(true);
 			foreach(GameObject actionButton in m_actionButton)
 			{
@@ -31,6 +36,10 @@ public class UIController : MonoBehaviour
 		}
 		else
 		{
+			if (m_unitAction.GetAction == UnitAction.Action.Skill)
+			{
+				m_skillWindow.SetActive(true);
+			}
 			m_cameBackButton.SetActive(false);
 			foreach(GameObject actionButton in m_actionButton)
 			{
