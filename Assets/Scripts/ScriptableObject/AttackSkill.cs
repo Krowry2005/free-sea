@@ -49,7 +49,8 @@ public class AttackSkill : Skills
 		{ return attackWay; }
 
 	public int GetMagnification()
-		{ return magnification; }
+		//“•\‹L
+		{ return magnification / 100; }
 
 	public int GetAttackNumTime() {
 		return attackNumTime; }

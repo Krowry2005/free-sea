@@ -15,28 +15,31 @@ MonoBehaviour:
   data:
   - friendLevel: 0
     sprite: {fileID: 21300000, guid: d46c9ba111b274d4c906685a3f86b6af, type: 3}
-    skill: []
-    attacks: []
+    skillList:
+    - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
+    attackSkillList:
+    - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
     fly: 0
     name: Skeleton
     id: 1
     health: 100
-    mp: 0
-    attack: 100
+    sp: 50
+    attack: 20
     defense: 5
     agility: 5
   - friendLevel: 2
     sprite: {fileID: 21300000, guid: 9e0254e4371b102419781fb0aeb42a17, type: 3}
-    skill:
+    skillList:
     - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
-    attacks:
+    attackSkillList:
     - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
     - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
+    - {fileID: 11400000, guid: ba006f2c0b9137040a3dc151f8486b2e, type: 2}
     fly: 0
     name: Yuusya
-    id: 2
+    id: 1
     health: 100
-    mp: 0
-    attack: 50
-    defense: 20
-    agility: 15
+    sp: 100
+    attack: 10
+    defense: 10
+    agility: 10

@@ -2465,7 +2465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitsData: {fileID: 11400000, guid: e9a8cb7baf626e049b98d3b2140a5c07, type: 2}
-  m_dataId: 2
+  m_dataId: 1
   m_friendLevel: 2
 --- !u!1 &8206070634150816031
 GameObject:

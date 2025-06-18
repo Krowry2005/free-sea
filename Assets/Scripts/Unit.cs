@@ -1,9 +1,6 @@
-using NUnit.Framework;
-using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using System.Collections.Generic;
 using static UnitsSetting;
 using static UnitsSetting.UnitData;
 
@@ -23,12 +20,13 @@ public class Unit : MonoBehaviour
 
 	string m_name;
 	Sprite m_sprite;
-	AttackSkill[] m_attackSkill;
+	List<AttackSkill> m_attackSkillList = new();
+	List<Skills> m_skillList = new();
 	bool m_fly;
 	int MaxHealth;
 	int m_health;
-	int MaxMp;
-	int m_mp;
+	int MaxSp;
+	int m_sp;
 	int m_attack;
 	int m_defense;
 	int m_agility;
@@ -37,7 +35,7 @@ public class Unit : MonoBehaviour
 	public Sprite Sprite => m_sprite; 
 	public string Name => m_name;
 	public bool Fly => m_fly;
-	public int MP => m_mp;
+	public int SP => m_sp;
 	public int HealthValue => m_health;
 	public int AttackValue => m_attack;
 	public int Agility => m_agility;
@@ -52,10 +50,13 @@ public class Unit : MonoBehaviour
 		//ユニットのデータを引き継ぐ
 		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
 		m_name = unitData.name;
+		Debug.Log(m_name);
 		m_sprite = unitData.sprite;
+		m_skillList.AddRange(unitData.GetSkill());
+		m_attackSkillList.AddRange(unitData.GetAttackSkill());
 		m_fly = unitData.fly;
 		MaxHealth = unitData.health;
-		MaxMp = unitData.mp;
+		MaxSp = unitData.sp;
 		m_attack = unitData.attack;
 		m_defense = unitData.defense;
 		m_agility = unitData.agility;
@@ -67,7 +68,7 @@ public class Unit : MonoBehaviour
 		m_health = MaxHealth;
 
 		//MP
-		m_mp = MaxMp;
+		m_sp = MaxSp;
 
 		//ユニットリストに加える
 		m_turnManager.SetList(gameObject);
@@ -85,8 +86,15 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public AttackSkill[] GetAttackSkills()
-	{ return m_attackSkill; }
+	public List<AttackSkill> GetAttackSkill()
+	{
+		return m_attackSkillList;
+	}
+
+	public List<Skills> GetSkill()
+	{
+		return m_skillList; 
+	}
 
 	public void Damage(int damage)
 	{
@@ -109,6 +117,11 @@ public class Unit : MonoBehaviour
 		//防御力以下のダメージは1にする
 		if (damage <= m_defense) return 1;
 		return damage -= m_defense;
+	}
+
+	public void DirectionReset()
+	{
+		gameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
 	}
 }
 

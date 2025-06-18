@@ -27,7 +27,7 @@ public class Skills : ScriptableObject
 
 	//スキルのID
 	[SerializeField]
-	private int skillId;
+	private int skillId = 0;
 
 	//漢字のスキル名
 	[SerializeField]

@@ -26,7 +26,11 @@ public class UnitsSetting : ScriptableObject
 
 		//持っているスキル
 		[SerializeField]
-		private List<Skills> skillList = null;
+		private List<Skills> skillList ;
+
+		//攻撃スキル
+		[SerializeField]
+		private List<AttackSkill> attackSkillList;
 
 		//浮いているキャラクターか
 		public bool fly;
@@ -35,12 +39,15 @@ public class UnitsSetting : ScriptableObject
 		public string name;
 		public int id;
 		public int health;
-		public int mp;
+		public int sp;
 		public int attack;
 		public int defense;
 		public int agility;
 
 		public List<Skills> GetSkill()
-			{ return skillList; }
+		{ return skillList; }
+
+		public List<AttackSkill> GetAttackSkill()
+		{return attackSkillList;}
 	}
 }

@@ -59,13 +59,11 @@ public class UnitAction : MonoBehaviour
 				switch (m_action)
 				{
 					case Action.Move:
-						
-						
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[0].GetRange(), false, false);						
 						break;
 
 					case Action.Attack:
-						
-						
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetAttackSkill()[0].GetRange(), true, true);
 						break;
 
 					case Action.Item:
@@ -221,21 +219,24 @@ public class UnitAction : MonoBehaviour
 		var DamageUnit = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position, targetPos));
 		if (DamageUnit.Count() > 0)
 		{
+			Unit attackUnit = m_turnUnit.GetComponent<Unit>();
 			foreach (GameObject list in DamageUnit)
 			{
 				//ダメージ
-				Unit unit = list.GetComponent<Unit>();
+				Unit hitUnit = list.GetComponent<Unit>();
 
 				//フレンドリーファイアの禁止
-				if (unit.FriendLevel != m_turnUnit.GetComponent<Unit>().FriendLevel)
+				if (hitUnit.FriendLevel != attackUnit.FriendLevel)
 				{
-					Debug.Log("HIt?");
-					unit.Damage(m_turnUnit.GetComponent<Unit>().AttackValue * m_turnUnit.GetComponent<Unit>().GetAttackSkills()[0].GetMagnification() / 100);
+					Transform unit = m_turnUnit.transform;
+					unit.LookAt(list.transform);
+					hitUnit.Damage(attackUnit.AttackValue * attackUnit.GetAttackSkill()[0].GetMagnification());
+					Animator animator = m_turnUnit.GetComponent<Animator>();
+					animator.SetTrigger("Attack");
 				}
 				else
 				{
 					Debug.Log("miss");
-
 				}
 			}
 		}

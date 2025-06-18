@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: "\u901A\u5E38\u79FB\u52D5"
   m_EditorClassIdentifier: 
   skillType: 1
-  skillId: 0
+  skillId: 1
   kanjiName: "\u901A\u5E38\u79FB\u52D5"
   hiraganaName: "\u3064\u3046\u3058\u3087\u3046\u3044\u3069\u3046"
-  mp: 0
+  sp: 0
   information: "\u4F55\u306E\u5909\u54F2\u3082\u306A\u3044\u79FB\u52D5\u3001\uFF11\u30DE\u30B9\u79FB\u52D5\u3059\u308B"
-  Range:
+  range:
   - {x: -1, y: 0, z: 1}
   - {x: 0, y: 0, z: 1}
   - {x: 1, y: 0, z: 1}
@@ -27,4 +27,6 @@ MonoBehaviour:
   - {x: -1, y: 0, z: -1}
   - {x: 0, y: 0, z: -1}
   - {x: 1, y: 0, z: -1}
+  extent:
+  - {x: 0, y: 0, z: 0}
   skillUserEffect: {fileID: 0}
