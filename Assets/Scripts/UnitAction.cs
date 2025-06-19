@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -64,16 +65,7 @@ public class UnitAction : MonoBehaviour
 						break;
 
 					case Action.Attack:
-						OnDisplay(m_turnUnit.GetComponent<Unit>().GetAttackSkill()[0].GetRange(), true, true);
-						break;
-
-					case Action.Item:
-
-						break;
-
-					case Action.Skill:
-						//スキルウィンドウを開いて操作
-						
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[1].GetRange(), true, true);
 						break;
 
 					case Action.Information:
@@ -109,7 +101,7 @@ public class UnitAction : MonoBehaviour
 		}
 	}
 
-	private void OnDisplay(Vector3Int[] massArray, bool possible, bool fly) 
+	public void OnDisplay(Vector3Int[] massArray, bool possible, bool fly) 
 	//選択できるマスの表示 (選択可能範囲、移動不可マスを選択可能か)
 	{
 		foreach (GameObject mapList in m_gridmass.GridList)
@@ -165,15 +157,7 @@ public class UnitAction : MonoBehaviour
 						break;
 
 					case Action.Attack:
-						OnAttack(targetPos);
-						break;
-
-					case Action.Item:
-
-						break;
-
-					case Action.Skill:
-
+						OnAttack(m_turnUnit.GetComponent<Unit>().GetAttackSkill()[1].GetExtent());
 						break;
 
 					case Action.Information:
@@ -215,52 +199,55 @@ public class UnitAction : MonoBehaviour
 		}
 	}
 
-	private void OnAttack(Vector3 targetPos)
+	private void OnAttack(Vector3Int[] targetPos)
 	{
 		//選択したマスにいるキャラをすべて抽出
-		var DamageUnit = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position, targetPos));
-		if (DamageUnit.Count() > 0)
+		for(int i = 0; i < targetPos.Length; i++)
 		{
-			Unit attackUnit = m_turnUnit.GetComponent<Unit>();
-			foreach (GameObject list in DamageUnit)
+			var DamageUnit = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position, targetPos[i]));
+			if (DamageUnit.Count() > 0)
 			{
-				//ダメージ
-				Unit hitUnit = list.GetComponent<Unit>();
+				Unit attackUnit = m_turnUnit.GetComponent<Unit>();
+				foreach (GameObject list in DamageUnit)
+				{
+					//ダメージ
+					Unit hitUnit = list.GetComponent<Unit>();
 
-				//フレンドリーファイアの禁止
-				if (hitUnit.FriendLevel != attackUnit.FriendLevel)
-				{
-					Transform unit = m_turnUnit.transform;
-					unit.LookAt(list.transform);
-					hitUnit.Damage(attackUnit.AttackValue * attackUnit.GetAttackSkill()[0].GetMagnification());
-					Animator animator = m_turnUnit.GetComponent<Animator>();
-					animator.SetTrigger("Attack");
-				}
-				else
-				{
-					Debug.Log("miss");
+					//フレンドリーファイアの禁止
+					if (hitUnit.FriendLevel != attackUnit.FriendLevel)
+					{
+						Transform unit = m_turnUnit.transform;
+						unit.LookAt(list.transform);
+						hitUnit.Damage(attackUnit.AttackValue * attackUnit.GetAttackSkill()[0].GetMagnification());
+						Animator animator = m_turnUnit.GetComponent<Animator>();
+						animator.SetTrigger("Attack");
+					}
+					else
+					{
+						Debug.Log("miss");
+					}
 				}
 			}
-		}
+			//選択したマスに何もいなかったらどうにかする
+			else
+			{
+				Debug.Log("miss");
+			}
 
-		//選択したマスに何もいなかったらどうにかする
-		else
+			OnRemove();
+			m_unitManager.SetPhase(UnitManager.Phase.End);
+			m_action = Action.Choice;
+		}
+	}
+
+	public void OnSkill(Skills usedSkill)
+	{
+		OnDisplay(usedSkill.GetRange(), true, true);
+		switch (usedSkill.GetSkillType())
 		{
-			Debug.Log("miss");
+			
+			
 		}
-
-		OnRemove();
-		m_unitManager.SetPhase(UnitManager.Phase.End);
-		m_action = Action.Choice;
-	}
-
-	private void OnItem()
-	{
-
-	}
-
-	private void OnSkill()
-	{
 
 	}
 
