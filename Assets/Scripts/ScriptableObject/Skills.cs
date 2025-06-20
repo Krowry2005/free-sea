@@ -41,6 +41,9 @@ public class Skills : ScriptableObject
 	[SerializeField]
 	int sp = 0;
 
+	[SerializeField]
+	bool extentAttack = false;
+
 	//情報
 	[SerializeField]
 	private string information = "";
@@ -51,7 +54,7 @@ public class Skills : ScriptableObject
 
 	//範囲
 	[SerializeField]
-	Vector3Int[] extent = { new(0, 0, 0), };
+	Vector3Int[] extent = { new(0, 0, 0),};
 
 	//　使用者のエフェクト
 	[SerializeField]
@@ -85,6 +88,11 @@ public class Skills : ScriptableObject
 	public int GetMP()
 	{
 		return sp;
+	}
+
+	public bool GetExtentAttack()
+	{
+		return extentAttack;
 	}
 
 	//　スキル情報を返す

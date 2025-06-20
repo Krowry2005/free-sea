@@ -32,7 +32,7 @@ public class SkillAction : MonoBehaviour
 				//ラムダ式の中で i を使っているため、すべてのボタンが最後の i の値を使ってしまう
 				int index = i;
 				m_actionButton[i].GetComponent<Button>().onClick.RemoveAllListeners();
-				m_actionButton[i].GetComponent<Button>().onClick.AddListener(() => m_unitAction.OnDisplay(unitStatus.GetSkill()[index].GetRange(), true, true));
+				m_actionButton[i].GetComponent<Button>().onClick.AddListener(() => m_unitAction.OnSkill(unitStatus.GetSkill()[index]));
 			}
 		}
 	}

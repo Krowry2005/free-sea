@@ -13,6 +13,9 @@ public class Choice : MonoBehaviour
 	GameObject m_choiceBlock;
 
 	[SerializeField]
+	GameObject m_extentBlock;
+
+	[SerializeField]
 	bool m_possible;
 
 	[SerializeField]
@@ -31,14 +34,14 @@ public class Choice : MonoBehaviour
 		m_gridMass.SetGrid(gameObject);
 	}
 
-	public void OnChoice()
+	public void OnChoice(bool choice)
 	{
-		m_choiceBlock.SetActive(true);
+		m_choiceBlock.SetActive(choice);
 	}
 
-	public void OnCancell()
+	public void OnExtent(bool display)
 	{
-		m_choiceBlock.SetActive(false);
+		m_extentBlock.SetActive(display);
 	}
 
 	public void SetPossible(bool possible)

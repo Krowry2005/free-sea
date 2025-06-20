@@ -32,6 +32,7 @@ public class UnitAction : MonoBehaviour
 	GridMass m_gridmass;
 
 	GameObject m_turnUnit;
+	Skills m_usedSkill;
 
 	List<GameObject> m_viewList = new();
 	bool m_move;
@@ -61,11 +62,13 @@ public class UnitAction : MonoBehaviour
 				switch (m_action)
 				{
 					case Action.Move:
-						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[0].GetRange(), false, false);						
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[0].GetRange(), false, false);
+						m_unitManager.SetPhase(UnitManager.Phase.Action);
 						break;
 
 					case Action.Attack:
 						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[1].GetRange(), true, true);
+						m_unitManager.SetPhase(UnitManager.Phase.Action);
 						break;
 
 					case Action.Information:
@@ -73,7 +76,7 @@ public class UnitAction : MonoBehaviour
 						foreach(GameObject posList in m_gridmass.GridList)
 						{
 							Choice choice = posList.GetComponent<Choice>();
-							choice.OnChoice();
+							choice.OnChoice(true);
 							m_viewList.Add(posList);
 							m_unitManager.SetPhase(UnitManager.Phase.Action);
 						}
@@ -97,7 +100,7 @@ public class UnitAction : MonoBehaviour
 						OnRemove();
 					}
 				}
-				break;
+			break;
 		}
 	}
 
@@ -106,7 +109,6 @@ public class UnitAction : MonoBehaviour
 	{
 		foreach (GameObject mapList in m_gridmass.GridList)
 		{
-			Choice choice = mapList.GetComponent<Choice>();
 			for (int i = 0; i < massArray.Length; i++)
 			{
 				// 整数座標で比較 
@@ -114,11 +116,32 @@ public class UnitAction : MonoBehaviour
 				int destZ = Mathf.RoundToInt(m_turnUnit.transform.position.z + massArray[i].z);
 				if (SameGridPosition(mapList.transform.position, new Vector3(destX, mapList.transform.position.y, destZ)))
 				{
+					Choice choice = mapList.GetComponent<Choice>();
 					//選択不可マスかつ、選択不可表示ならあきらめる
 					if (!choice.Possible && !possible) continue;
-					choice.OnChoice();
+					choice.OnChoice(true);
 					m_viewList.Add(mapList);
 					m_unitManager.SetPhase(UnitManager.Phase.Action);
+					break;
+				}
+			}
+		}
+	}
+
+	public void OnExtent(Vector3Int[] extent,Vector3 ActivationPos)
+	{
+		for(int i = 0; i < extent.Length; i++)
+		{
+			foreach(GameObject mapList in m_gridmass.GridList)
+			{
+				// 整数座標で比較 
+				int destX = Mathf.RoundToInt(ActivationPos.x + extent[i].x);
+				int destZ = Mathf.RoundToInt(ActivationPos.x + extent[i].z);
+				if (SameGridPosition(mapList.transform.position, new Vector3(destX,mapList.transform.position.y,destZ)))
+				{
+					Choice choice = mapList.GetComponent<Choice>();
+					choice.OnExtent(true);
+					m_viewList.Add(mapList);
 					break;
 				}
 			}
@@ -157,7 +180,17 @@ public class UnitAction : MonoBehaviour
 						break;
 
 					case Action.Attack:
-						OnAttack(m_turnUnit.GetComponent<Unit>().GetAttackSkill()[1].GetExtent());
+						List<Vector3Int> extentList = new();
+						foreach (Vector3Int extent in m_turnUnit.GetComponent<Unit>().GetAttackSkill()[1].GetExtent())
+						{
+							Vector3Int targetPosInt = new Vector3Int(Mathf.RoundToInt(targetPos.x), Mathf.RoundToInt(targetPos.y), Mathf.RoundToInt(targetPos.z));
+							extentList.Add(extent + targetPosInt);
+						}
+						OnAttack(extentList.ToArray());
+						break;
+
+					case Action.Skill:
+						OnExtent(m_usedSkill.GetExtent(),targetPos);
 						break;
 
 					case Action.Information:
@@ -242,13 +275,8 @@ public class UnitAction : MonoBehaviour
 
 	public void OnSkill(Skills usedSkill)
 	{
+		m_usedSkill = usedSkill;
 		OnDisplay(usedSkill.GetRange(), true, true);
-		switch (usedSkill.GetSkillType())
-		{
-			
-			
-		}
-
 	}
 
 	public void OnRemove()
@@ -257,7 +285,8 @@ public class UnitAction : MonoBehaviour
 		foreach (GameObject list in m_viewList)
 		{
 			Choice choice = list.GetComponent<Choice>();
-			choice.OnCancell();
+			choice.OnChoice(false);
+			choice.OnExtent(false);
 		}
 		m_viewList.Clear();
 	}
