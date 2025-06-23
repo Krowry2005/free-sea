@@ -15,20 +15,29 @@ MonoBehaviour:
   data:
   - friendLevel: 0
     sprite: {fileID: 21300000, guid: d46c9ba111b274d4c906685a3f86b6af, type: 3}
-    skillList:
-    - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
-    attackSkillList:
-    - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
-    fly: 0
-    name: Skeleton
+    name: "\u30B9\u30B1\u30EB\u30C8\u30F3"
+    information: "\u306A\u305C\u304B\u3001\u3084\u305F\u3089\u3081\u3063\u305F\u3089\u653B\u6483\u529B\u304C\u9AD8\u3044\u3002\n\u706B\u529B\u306E\u5272\u306B\u306F\u8010\u4E45\u6027\u306F\u3082\u308D\u3044\u3002"
     id: 1
     health: 100
     sp: 50
     attack: 20
     defense: 5
     agility: 5
+    skillList:
+    - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
+    attackSkillList:
+    - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
+    fly: 0
   - friendLevel: 2
     sprite: {fileID: 21300000, guid: 9e0254e4371b102419781fb0aeb42a17, type: 3}
+    name: "\u52C7\u8005"
+    information: "\u30B9\u30C6\u30FC\u30BF\u30B9\u306F\u8CA7\u5F31\u3002\n\u9003\u3052\u306A\u304C\u3089\u9B54\u6CD5\u3092\u99C6\u4F7F\u3057\u3066\u6226\u304A\u3046"
+    id: 1
+    health: 100
+    sp: 100
+    attack: 10
+    defense: 10
+    agility: 10
     skillList:
     - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
     - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
@@ -39,10 +48,23 @@ MonoBehaviour:
     - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
     - {fileID: 11400000, guid: ba006f2c0b9137040a3dc151f8486b2e, type: 2}
     fly: 0
+  - friendLevel: 2
+    sprite: {fileID: 21300000, guid: 9e0254e4371b102419781fb0aeb42a17, type: 3}
     name: Yuusya
+    information: 
     id: 1
     health: 100
     sp: 100
     attack: 10
     defense: 10
     agility: 10
+    skillList:
+    - {fileID: 11400000, guid: aee9fab59fe89f845ac850fd7c1157c1, type: 2}
+    - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
+    - {fileID: 11400000, guid: ba006f2c0b9137040a3dc151f8486b2e, type: 2}
+    - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
+    attackSkillList:
+    - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
+    - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
+    - {fileID: 11400000, guid: ba006f2c0b9137040a3dc151f8486b2e, type: 2}
+    fly: 0

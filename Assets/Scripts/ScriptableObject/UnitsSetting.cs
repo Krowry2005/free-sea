@@ -19,35 +19,87 @@ public class UnitsSetting : ScriptableObject
 		}
 
 		//敵、味方、中立
-		public FriendLevel friendLevel;
+		[SerializeField]
+		FriendLevel friendLevel;
 
 		//見た目の画像,アイコンも保持
-		public Sprite sprite;
+		[SerializeField]
+		Sprite sprite;
+
+		//ステータス
+		[SerializeField]
+		string name;
+
+		[SerializeField, TextArea(1, 4)]
+		string information = "1\n2\n3\n4";
+
+		[SerializeField]
+		int id;
+
+		[SerializeField]
+		int health;
+
+		[SerializeField]
+		int sp;
+
+		[SerializeField]
+		int attack;
+
+		[SerializeField]
+		int defense;
+
+		[SerializeField]
+		int agility;
 
 		//持っているスキル
 		[SerializeField]
-		private List<Skills> skillList ;
+		private List<Skill> skillList ;
 
 		//攻撃スキル
 		[SerializeField]
-		private List<AttackSkill> attackSkillList;
+		private List<SkillAttack> attackSkillList;
 
 		//浮いているキャラクターか
-		public bool fly;
+		[SerializeField]
+		bool fly;
 
-		//ステータス
-		public string name;
-		public int id;
-		public int health;
-		public int sp;
-		public int attack;
-		public int defense;
-		public int agility;
+		public FriendLevel GetFriendLevel()
+		{ return friendLevel; }
 
-		public List<Skills> GetSkill()
+		public String GetName()
+		{ return name;}
+
+		public String GetInformation()
+		{ return information; }
+
+		public Sprite GetSprite()
+		{ return sprite;}
+
+		public int GetID()
+		{ return id;}
+
+		public int GetHealth()
+		{ return health;}
+
+		public int GetSkillPoint()
+		{ return sp; }
+
+		public int GetAttack()
+		{ return attack;}
+
+		public int GetDefense()
+		{ return defense;}
+
+		public int GetAgillity()
+		{ return agility;}
+
+		public List<Skill> GetSkill()
 		{ return skillList; }
 
-		public List<AttackSkill> GetAttackSkill()
+		public List<SkillAttack> GetAttackSkill()
 		{return attackSkillList;}
+
+		public bool GetFly()
+		{return fly;}
 	}
 }

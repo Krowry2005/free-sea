@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 [CreateAssetMenu(fileName = "Attack", menuName = "CreateAttackSkill")]
-public class AttackSkill : Skills
+public class SkillAttack: Skill
 {
 	public enum AttackType
 	{

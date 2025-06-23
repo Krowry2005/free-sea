@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 [Serializable]
 [CreateAssetMenu(fileName = "Skill", menuName = "CreateSkill")]
-public class Skills : ScriptableObject
+public class Skill : ScriptableObject
 {
 	public enum Type
 	{

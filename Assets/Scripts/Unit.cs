@@ -19,9 +19,10 @@ public class Unit : MonoBehaviour
 	Animator m_animator;
 
 	string m_name;
+	string m_information;
 	Sprite m_sprite;
-	List<AttackSkill> m_attackSkillList = new();
-	List<Skills> m_skillList = new();
+	List<SkillAttack> m_attackSkillList = new();
+	List<Skill> m_skillList = new();
 	bool m_fly;
 	int MaxHealth;
 	int m_health;
@@ -34,9 +35,12 @@ public class Unit : MonoBehaviour
 	public FriendLevel FriendLevel => m_friendLevel;
 	public Sprite Sprite => m_sprite; 
 	public string Name => m_name;
+	public int Id => m_dataId;
+	public string Information => m_information;
 	public bool Fly => m_fly;
 	public int SP => m_sp;
 	public int HealthValue => m_health;
+	public int DefeseValue => m_defense;
 	public int AttackValue => m_attack;
 	public int Agility => m_agility;
 
@@ -48,18 +52,18 @@ public class Unit : MonoBehaviour
 		m_animator = GetComponent<Animator>();
 
 		//ユニットのデータを引き継ぐ
-		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.id == m_dataId && unitSetting.friendLevel == m_friendLevel);
-		m_name = unitData.name;
-		Debug.Log(m_name);
-		m_sprite = unitData.sprite;
+		UnitData unitData = unitsData.data.FirstOrDefault(unitSetting => unitSetting.GetID() == m_dataId && unitSetting.GetFriendLevel() == m_friendLevel);
+		m_name = unitData.GetName();
+		m_information = unitData.GetInformation();
+		m_sprite = unitData.GetSprite();
 		m_skillList.AddRange(unitData.GetSkill());
 		m_attackSkillList.AddRange(unitData.GetAttackSkill());
-		m_fly = unitData.fly;
-		MaxHealth = unitData.health;
-		MaxSp = unitData.sp;
-		m_attack = unitData.attack;
-		m_defense = unitData.defense;
-		m_agility = unitData.agility;
+		m_fly = unitData.GetFly();
+		MaxHealth = unitData.GetHealth();
+		MaxSp = unitData.GetSkillPoint();
+		m_attack = unitData.GetAttack();
+		m_defense = unitData.GetDefense();
+		m_agility = unitData.GetAgillity();
 	}
 
 	private void Start()
@@ -86,12 +90,12 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	public List<AttackSkill> GetAttackSkill()
+	public List<SkillAttack> GetAttackSkill()
 	{
 		return m_attackSkillList;
 	}
 
-	public List<Skills> GetSkill()
+	public List<Skill> GetSkill()
 	{
 		return m_skillList; 
 	}

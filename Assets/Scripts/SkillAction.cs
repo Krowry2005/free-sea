@@ -15,10 +15,9 @@ public class SkillAction : MonoBehaviour
 	[SerializeField]
 	GameObject[] m_actionButton;
 
-
-
 	public void OnSelect()
 	{
+		//UIのボタンをUnitのスキルに置き換える
 		Unit unitStatus = m_unitManager.TurnUnit.GetComponent<Unit>();
 		for (int i = 0; i < m_actionButton.Length; i++)
 		{
