@@ -1,14 +1,7 @@
-using NUnit.Framework;
-using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.LowLevelPhysics;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.U2D;
 
 public class UnitAction : MonoBehaviour
 {
@@ -262,13 +255,7 @@ public class UnitAction : MonoBehaviour
 			{
 				//移動の可不可を再定義、有効マス表示を外ス
 				GridInvalid(targetPos);
-
-				// 移動時も整数座標にスナップ 
-				m_turnUnit.transform.position = new Vector3(
-					Mathf.RoundToInt(targetPos.x),
-					m_turnUnit.transform.position.y,	//ここはまとめたらだめ
-					Mathf.RoundToInt(targetPos.z)
-				);
+				m_turnUnit.GetComponent<Unit>().MoveTo(targetPos);
 				m_unitManager.SetPhase(UnitManager.Phase.End);
 				m_action = Action.Choice;
 				return;
@@ -325,6 +312,21 @@ public class UnitAction : MonoBehaviour
 	{
 		m_usedSkill = usedSkill;
 		OnDisplay(usedSkill.GetRange(), true, true);
+		switch (usedSkill.GetSkillType())
+		{
+			case Skill.Type.Attack:
+				
+				break;
+			case Skill.Type.Heal:
+				
+				break;
+			case Skill.Type.Buff:
+				
+				break;
+			case Skill.Type.DeBuff:
+				
+				break;
+		}
 	}
 
 	public void OnRemove()

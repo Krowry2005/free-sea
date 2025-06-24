@@ -1,6 +1,7 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 using static UnitsSetting;
 using static UnitsSetting.UnitData;
 
@@ -114,6 +115,17 @@ public class Unit : MonoBehaviour
 		//死亡メッセージ
 		Debug.Log(m_name + "は倒れた");
 		Destroy(gameObject,5);
+	}
+
+	public void MoveTo(Vector3 targetPos)
+	{
+		// 移動時も整数座標にスナップ 
+		transform.position = new Vector3(
+			Mathf.RoundToInt(targetPos.x),
+			transform.position.y,    //ここはまとめたらだめ
+			Mathf.RoundToInt(targetPos.z)
+		);
+		return;
 	}
 
 	public int Calculation(int damage)
