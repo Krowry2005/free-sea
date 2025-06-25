@@ -30,6 +30,7 @@ MonoBehaviour:
   - {x: 1, y: 0, z: -1}
   extent:
   - {x: 0, y: 0, z: 0}
+  impossibleMass: 1
   skillUserEffect: {fileID: 0}
   attackType: 0
   attackWay: 0

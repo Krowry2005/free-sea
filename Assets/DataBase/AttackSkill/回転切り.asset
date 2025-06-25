@@ -30,9 +30,10 @@ MonoBehaviour:
   - {x: -1, y: 0, z: -1}
   - {x: 0, y: 0, z: -1}
   - {x: 1, y: 0, z: -1}
+  impossibleMass: 1
   skillUserEffect: {fileID: 0}
   attackType: 2
   attackWay: 0
   magnification: 200
-  attackNumTime: 1
+  attackNumTime: 2
   friendlyFire: 0

@@ -68,7 +68,6 @@ public class Information : MonoBehaviour
 
 	public void DefText()
 	{
-		Debug.Log("????");
 		foreach (GameObject button in m_textChanger)
 		{
 			button.SetActive(true);

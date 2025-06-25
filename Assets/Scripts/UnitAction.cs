@@ -1,6 +1,6 @@
+using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class UnitAction : MonoBehaviour
@@ -33,6 +33,10 @@ public class UnitAction : MonoBehaviour
 
 	List<GameObject> m_rangeViewList = new();
 	List<GameObject> m_extentViewList = new();
+
+	Vector3Int m_activationPos;
+	Transform m_turnUnitTransform;
+
 	bool m_move;
 	bool m_select;
 	bool m_actionAproval;
@@ -71,13 +75,13 @@ public class UnitAction : MonoBehaviour
 
 					case Action.Move:
 						//移動範囲の表示1回目
-						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[0].GetRange(), false, false);
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[0].GetRange(), false);
 						m_unitManager.SetPhase(UnitManager.Phase.Action);
 						break;
 
 					case Action.Attack:
 						//攻撃範囲の表示
-						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[1].GetRange(), true, true);
+						OnDisplay(m_turnUnit.GetComponent<Unit>().GetSkill()[1].GetRange(), true);
 						m_unitManager.SetPhase(UnitManager.Phase.Action);
 						break;
 
@@ -128,12 +132,22 @@ public class UnitAction : MonoBehaviour
 
 	private void OnAction(Vector3Int targetPos)
 	{
+		List<GameObject> viewList = new();
+		if(m_select)
+		{
+			viewList.AddRange(m_rangeViewList);
+		}
+		else
+		{
+			viewList.AddRange(m_extentViewList);
+		}
+
 		// コピーを使って安全にループ
-		// 効果選択範囲としていされたマスが同じであるかを走査
-		foreach (GameObject viewList in m_rangeViewList.ToList())
+		// 効果選択範囲と指定されたマスが同じであるかを走査
+		foreach (GameObject viewer in viewList)
 		{
 			//同じならそのマスを起点に効果範囲を表示、セレクトフェーズに返す
-			if (SameGridPosition(viewList.transform.position, targetPos))
+			if (SameGridPosition(viewer.transform.position, targetPos))
 			{
 				switch (m_action)
 				{
@@ -163,6 +177,20 @@ public class UnitAction : MonoBehaviour
 						}
 						break;
 
+					case Action.Skill:
+						if (m_select)
+						{
+							//効果範囲選択
+							OnExtent(m_usedSkill.GetExtent(), targetPos);
+						}
+						else
+						{
+							//実行
+							Debug.Log(m_usedSkill + "発動！！");
+							SkillExecution(m_usedSkill, m_activationPos);
+						}
+						break;
+
 					case Action.Information:
 						//情報取得、ターン消費なし
 						for (int i = 0; i <  m_unitManager.UnitList.Count; i++)
@@ -174,13 +202,11 @@ public class UnitAction : MonoBehaviour
 						}
 						break;
 				}
-				//選択が終わったのでループから抜ける
-				break;
 			}
 		}
 	}
 
-	public void OnDisplay(Vector3Int[] massArray, bool possible, bool fly)
+	public void OnDisplay(Vector3Int[] massArray, bool possible)
 	//選択できるマスの表示 (選択可能範囲、移動不可マスを選択可能か)
 	{
 		foreach (GameObject mapList in m_gridmass.GridList)
@@ -198,7 +224,6 @@ public class UnitAction : MonoBehaviour
 					choice.OnChoice(true);
 					m_select = true;
 					m_rangeViewList.Add(mapList);
-					m_unitManager.SetPhase(UnitManager.Phase.Action);
 					break;
 				}
 			}
@@ -208,24 +233,38 @@ public class UnitAction : MonoBehaviour
 	public void OnExtent(Vector3Int[] extent, Vector3 ActivationPos)
 	//スキル、アイテム等の効果範囲の表示
 	{
+		//Range範囲の見た目削除
+		foreach(GameObject viewList in m_rangeViewList)
+		{
+			if(!SameGridPosition(viewList.transform.position,ActivationPos))
+			{
+				viewList.GetComponent<Choice>().OnChoice(false);
+			}
+		}
+
+		m_activationPos = new Vector3Int(
+			Mathf.RoundToInt(ActivationPos.x),
+			Mathf.RoundToInt(ActivationPos.y),
+			Mathf.RoundToInt(ActivationPos.z));
+
+		//効果範囲の見た目を生成
 		for (int i = 0; i < extent.Length; i++)
 		{
 			foreach (GameObject mapList in m_gridmass.GridList)
 			{
-				// 整数座標で比較 
 				int destX = Mathf.RoundToInt(ActivationPos.x + extent[i].x);
 				int destZ = Mathf.RoundToInt(ActivationPos.z + extent[i].z);
+				// 整数座標で比較 
 				if (SameGridPosition(mapList.transform.position, new Vector3(destX, mapList.transform.position.y, destZ)))
 				{
 					Choice choice = mapList.GetComponent<Choice>();
 					choice.OnExtent(true);
 					m_select = false;
 					m_extentViewList.Add(mapList);
-
 					break;
 				}
 			}
-		}
+		} 
 	}
 
 	private GameObject OnPick()
@@ -263,7 +302,7 @@ public class UnitAction : MonoBehaviour
 		}
 	}
 
-	private void OnAttack(Skill skill,Vector3Int targetPos)
+	private void OnAttack(SkillAttack skill,Vector3Int targetPos)
 	{
 		List<Vector3Int> extentList = new();
 		foreach (Vector3Int extent in skill.GetExtent())
@@ -272,35 +311,47 @@ public class UnitAction : MonoBehaviour
 		}
 
 		//選択したマスにいるキャラをすべて抽出
+		Transform unit = m_turnUnit.transform;
 		for (int i = 0; i < extentList.Count(); i++)
 		{
 			var DamageUnit = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position,extentList[i]));
 			if (DamageUnit.Count() > 0)
 			{
 				Unit attackUnit = m_turnUnit.GetComponent<Unit>();
-				foreach (GameObject list in DamageUnit)
+				for (int num = 0; num < skill.GetAttackNumTime();num++)
 				{
-					//ダメージ
-					Unit hitUnit = list.GetComponent<Unit>();
+					foreach (GameObject list in DamageUnit)
+					{
+						Unit hitUnit = list.GetComponent<Unit>();
+						//フレンドリーファイアの禁止
+						if (hitUnit.FriendLevel != attackUnit.FriendLevel)
+						{
+							m_turnUnitTransform = m_turnUnit.transform;
 
-					//フレンドリーファイアの禁止
-					if (hitUnit.FriendLevel != attackUnit.FriendLevel)
-					{
-						Transform unit = m_turnUnit.transform;
-						unit.LookAt(list.transform);
-						hitUnit.Damage(attackUnit.AttackValue * attackUnit.GetAttackSkill()[0].GetMagnification());
-						Animator animator = m_turnUnit.GetComponent<Animator>();
-					}
-					else
-					{
-						Debug.Log("miss");
+							//単体攻撃ならターゲットのほうを向く
+							if (skill.GetSingleTarget()) unit.LookAt(list.transform);
+
+							//エフェクト生成
+							if(skill.GetSkillUserEffect() != null) Instantiate(skill.GetSkillUserEffect(), unit);
+
+							//SEも再生する
+
+
+							//ダメージ処理
+							hitUnit.Damage(attackUnit.AttackValue * skill.GetMagnification());
+
+							//アニメーション再生
+							m_turnUnit.GetComponent<Animator>().SetTrigger(skill.GetKanjiName());
+
+							//アニメーション再生が終了次第、向きを戻して次のフェーズへ
+
+						}
+						else
+						{
+							Debug.Log("miss");				
+						}
 					}
 				}
-			}
-			//選択したマスに何もいなかったらどうにかする
-			else
-			{
-				Debug.Log("miss");
 			}
 			OnRemove();
 			m_unitManager.SetPhase(UnitManager.Phase.End);
@@ -311,20 +362,43 @@ public class UnitAction : MonoBehaviour
 	public void OnSkill(Skill usedSkill)
 	{
 		m_usedSkill = usedSkill;
-		OnDisplay(usedSkill.GetRange(), true, true);
+		OnDisplay(usedSkill.GetRange(), usedSkill.GetImpossibleMass());
+		m_unitManager.SetPhase(UnitManager.Phase.Action);
+	}
+
+	private void SkillExecution(Skill usedSkill,Vector3Int targetPos)
+	{
+		SkillAttack usedSkillAttack = m_turnUnit.GetComponent<Unit>().GetAttackSkill().FirstOrDefault(attackSkill => attackSkill.GetID() == usedSkill.GetID());
+		Debug.Log(usedSkill.GetKanjiName());
+
 		switch (usedSkill.GetSkillType())
-		{
+		{ 
 			case Skill.Type.Attack:
-				
+				OnAttack(usedSkillAttack, targetPos);
 				break;
-			case Skill.Type.Heal:
-				
+
+			case Skill.Type.Move:
+				OnMove(targetPos);
 				break;
+
+			case Skill.Type.Guard:
+
+				break;
+
 			case Skill.Type.Buff:
-				
+
 				break;
+
 			case Skill.Type.DeBuff:
-				
+
+				break;
+
+			case Skill.Type.Heal:
+
+				break;
+
+			case Skill.Type.Item:
+
 				break;
 		}
 	}

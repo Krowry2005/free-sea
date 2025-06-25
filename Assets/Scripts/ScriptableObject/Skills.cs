@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 [Serializable]
 [CreateAssetMenu(fileName = "Skill", menuName = "CreateSkill")]
@@ -17,7 +18,6 @@ public class Skill : ScriptableObject
 		Item,
 		Buff,
 		DeBuff,
-		Damage,
 		Heal,
 	}
 
@@ -55,6 +55,12 @@ public class Skill : ScriptableObject
 	//範囲
 	[SerializeField]
 	Vector3Int[] extent = { new(0, 0, 0),};
+
+	bool singleTarget;
+
+	//移動不可マスへの干渉
+	[SerializeField]
+	bool impossibleMass;
 
 	//　使用者のエフェクト
 	[SerializeField]
@@ -117,5 +123,22 @@ public class Skill : ScriptableObject
 	public GameObject GetSkillUserEffect()
 	{
 		return skillUserEffect;
+	}
+
+	//移動不可マスへの干渉
+	public bool GetImpossibleMass()
+	{
+		return impossibleMass;
+	}
+
+	//単体対象のスキルにはtrueを返す
+	public bool GetSingleTarget()
+	{
+		//効果範囲が２マス以上ならfalse
+		if (extent.Length >= 2)
+		{
+			return false;
+		}
+		else return true;
 	}
 }
