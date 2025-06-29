@@ -56,6 +56,10 @@ public class Skill : ScriptableObject
 	[SerializeField]
 	Vector3Int[] extent = { new(0, 0, 0),};
 
+	//サウンドエフェクト
+	[SerializeField]
+	AudioClip m_soundEffect = null;
+
 	bool singleTarget;
 
 	//移動不可マスへの干渉
@@ -91,7 +95,7 @@ public class Skill : ScriptableObject
 	}
 
 	//消費MP
-	public int GetMP()
+	public int GetSP()
 	{
 		return sp;
 	}
@@ -117,6 +121,11 @@ public class Skill : ScriptableObject
 	public Vector3Int[] GetExtent()
 	{
 		return extent;
+	}
+
+	public AudioClip GetAudioClip()
+	{
+		return m_soundEffect;
 	}
 
 	//　使用者のエフェクトを返す

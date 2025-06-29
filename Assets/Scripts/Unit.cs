@@ -39,9 +39,11 @@ public class Unit : MonoBehaviour
 	public int Id => m_dataId;
 	public string Information => m_information;
 	public bool Fly => m_fly;
+	public int MaxSP => m_sp;
 	public int SP => m_sp;
+	public int MaxHP => MaxHealth;
 	public int HealthValue => m_health;
-	public int DefeseValue => m_defense;
+	public int DefenseValue => m_defense;
 	public int AttackValue => m_attack;
 	public int Agility => m_agility;
 
@@ -101,17 +103,16 @@ public class Unit : MonoBehaviour
 		return m_skillList; 
 	}
 
-	public void Damage(int damage)
+	public int Damage(int damage)
 	{
-		if (m_health <= 0) return;
+		if (m_health <= 0) return 0;
 		m_health -= Calculation(damage);
-		Debug.Log(gameObject.name+"は"+Calculation(damage)+"ダメージを受けた" +"残りは"+m_health);
+		return Calculation(damage);
 	}
 
 	public void OnDeath()
 	{
 		m_turnManager.DeleteList(gameObject);
-		//m_animator.SetTrigger("Death");
 		//死亡メッセージ
 		Debug.Log(m_name + "は倒れた");
 		Destroy(gameObject,5);
@@ -126,6 +127,16 @@ public class Unit : MonoBehaviour
 			Mathf.RoundToInt(targetPos.z)
 		);
 		return;
+	}
+
+	public void usedSP(int sp)
+	{
+		if(sp > m_sp)
+		{
+			Debug.Log("SP不足エラー");
+			return;
+		}
+		m_sp -= sp;
 	}
 
 	public int Calculation(int damage)

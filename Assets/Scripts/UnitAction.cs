@@ -1,7 +1,9 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx.Triggers;
 using UnityEngine;
+using UniRx;
+using System;
 
 public class UnitAction : MonoBehaviour
 {
@@ -35,7 +37,7 @@ public class UnitAction : MonoBehaviour
 	List<GameObject> m_extentViewList = new();
 
 	Vector3Int m_activationPos;
-	Transform m_turnUnitTransform;
+	Quaternion m_turnUnitRotation;
 
 	bool m_move;
 	bool m_select;
@@ -54,7 +56,7 @@ public class UnitAction : MonoBehaviour
 	{
 		m_move = false;
 		m_action = Action.Choice;
-		m_select = false;
+		m_select = true;
 		m_actionAproval = true;
 	}
 
@@ -71,6 +73,7 @@ public class UnitAction : MonoBehaviour
 				{
 					case Action.Choice:
 						m_actionAproval = true;
+						m_select = true;
 						break;
 
 					case Action.Move:
@@ -130,7 +133,7 @@ public class UnitAction : MonoBehaviour
 		}
 	}
 
-	private void OnAction(Vector3Int targetPos)
+	public void OnAction(Vector3Int targetPos)
 	{
 		List<GameObject> viewList = new();
 		if(m_select)
@@ -304,57 +307,77 @@ public class UnitAction : MonoBehaviour
 
 	private void OnAttack(SkillAttack skill,Vector3Int targetPos)
 	{
+        Quaternion originalRotation = m_turnUnit.transform.rotation;
 		List<Vector3Int> extentList = new();
 		foreach (Vector3Int extent in skill.GetExtent())
 		{
 			extentList.Add(extent + targetPos);
 		}
 
-		//選択したマスにいるキャラをすべて抽出
-		Transform unit = m_turnUnit.transform;
-		for (int i = 0; i < extentList.Count(); i++)
+        //選択したマスにいるキャラをすべて抽出
+        for (int i = 0; i < extentList.Count(); i++)
 		{
-			var DamageUnit = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position,extentList[i]));
-			if (DamageUnit.Count() > 0)
+			//攻撃範囲内のキャラを抽出
+			var DamageUnitList = m_unitManager.UnitList.Where(unit => SameGridPosition(unit.transform.position,extentList[i]));
+			if (DamageUnitList.Count() > 0)
 			{
 				Unit attackUnit = m_turnUnit.GetComponent<Unit>();
 				for (int num = 0; num < skill.GetAttackNumTime();num++)
 				{
-					foreach (GameObject list in DamageUnit)
+					foreach (GameObject damageUnit in DamageUnitList)
 					{
-						Unit hitUnit = list.GetComponent<Unit>();
+						Unit hitUnit = damageUnit.GetComponent<Unit>();
 						//フレンドリーファイアの禁止
 						if (hitUnit.FriendLevel != attackUnit.FriendLevel)
 						{
-							m_turnUnitTransform = m_turnUnit.transform;
-
+                            Animator animator = m_turnUnit.GetComponent<Animator>();
 							//単体攻撃ならターゲットのほうを向く
-							if (skill.GetSingleTarget()) unit.LookAt(list.transform);
+							if (skill.GetSingleTarget()) m_turnUnit.transform.LookAt(damageUnit.transform);
 
 							//エフェクト生成
-							if(skill.GetSkillUserEffect() != null) Instantiate(skill.GetSkillUserEffect(), unit);
+							if (skill.GetSkillUserEffect() != null) Instantiate(skill.GetSkillUserEffect(), m_turnUnit.transform);
 
 							//SEも再生する
-
+							if (skill.GetAudioClip() != null) SoundEffect.Play2D(skill.GetAudioClip(), 0.2f);
 
 							//ダメージ処理
-							hitUnit.Damage(attackUnit.AttackValue * skill.GetMagnification());
+							m_uiController.GetComponent<Explanation>().TakeDamage(hitUnit,attackUnit, hitUnit.Damage(attackUnit.AttackValue * skill.GetMagnification()));
 
-							//アニメーション再生
-							m_turnUnit.GetComponent<Animator>().SetTrigger(skill.GetKanjiName());
+                            //アニメーション再生
+                            animator.SetTrigger(skill.GetKanjiName());
 
 							//アニメーション再生が終了次第、向きを戻して次のフェーズへ
+							ObservableStateMachineTrigger trigger = animator.GetBehaviour<ObservableStateMachineTrigger>();
 
-						}
-						else
+                            trigger.OnStateExitAsObservable()
+                             .Subscribe((ObservableStateMachineTrigger.OnStateInfo onStateInfo) =>
+                             {
+                                 Observable.Timer(TimeSpan.FromMilliseconds(100))
+                                 .Subscribe(__ =>
+                                 {
+                                     m_turnUnit.transform.rotation = originalRotation;
+                                     m_unitManager.SetPhase(UnitManager.Phase.End);
+                                 }).AddTo(this);
+
+                             }).AddTo(this);
+							break;
+                        }
+						//味方攻撃した時はミス表示出して次のターンへ
+                        else
 						{
-							Debug.Log("miss");				
-						}
+							m_uiController.GetComponent<Explanation>().MissDamage();
+                            m_unitManager.SetPhase(UnitManager.Phase.End);
+                        }
 					}
 				}
 			}
-			OnRemove();
-			m_unitManager.SetPhase(UnitManager.Phase.End);
+
+            else
+            {
+                m_uiController.GetComponent<Explanation>().MissDamage();
+                m_unitManager.SetPhase(UnitManager.Phase.End);
+            }
+            OnRemove();
 			m_action = Action.Choice;
 		}
 	}
@@ -366,10 +389,22 @@ public class UnitAction : MonoBehaviour
 		m_unitManager.SetPhase(UnitManager.Phase.Action);
 	}
 
-	private void SkillExecution(Skill usedSkill,Vector3Int targetPos)
+	public void SkillExecution(Skill usedSkill,Vector3Int targetPos)
 	{
 		SkillAttack usedSkillAttack = m_turnUnit.GetComponent<Unit>().GetAttackSkill().FirstOrDefault(attackSkill => attackSkill.GetID() == usedSkill.GetID());
-		Debug.Log(usedSkill.GetKanjiName());
+		if(usedSkill.GetSP() > m_turnUnit.GetComponent<Unit>().SP)
+		{
+			//choiceに戻る
+			m_select = true;
+			m_action = Action.Choice;
+			m_unitManager.SetPhase(UnitManager.Phase.Select);
+			m_uiController.GetComponent<Explanation>().NotEnoughSP(usedSkill);
+			return;
+		}
+		else
+		{
+			m_turnUnit.GetComponent<Unit>().usedSP(usedSkill.GetSP());
+		}
 
 		switch (usedSkill.GetSkillType())
 		{ 

@@ -87,7 +87,7 @@ public class Information : MonoBehaviour
 							" エネミーレベル : " + unit.FriendLevel + "\n" +
 							" HP  : " + unit.HealthValue + "\n" +
 							" ATK : " + unit.AttackValue + "\n" +
-							" DEF : " + unit.DefeseValue + "\n" +
+							" DEF : " + unit.DefenseValue + "\n" +
 							" AGI : " + unit.Agility; 
 	} 
 

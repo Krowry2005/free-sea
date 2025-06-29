@@ -30,8 +30,10 @@ MonoBehaviour:
   - {x: 1, y: 0, z: -1}
   extent:
   - {x: 0, y: 0, z: 0}
+  m_soundEffect: {fileID: 8300000, guid: 12131edf4c2684942ba67e2469c22196, type: 3}
   impossibleMass: 1
-  skillUserEffect: {fileID: 0}
+  skillUserEffect: {fileID: 5503505460791601945, guid: 74c549d1b06b6b140a1fd9536eea637f,
+    type: 3}
   attackType: 0
   attackWay: 0
   magnification: 100

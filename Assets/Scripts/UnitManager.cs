@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,9 +24,16 @@ public class UnitManager : MonoBehaviour
 	[SerializeField]
 	GameObject[] m_actionBar;
 
+	[SerializeField]
+	UnitStatus m_unitStatus;
+
+	[SerializeField]
+	GameObject m_uiController;
+
 	Phase m_phase;
 	GameObject m_turnUnit;
 	int m_round;
+	Quaternion m_turnUnitRotation;
 
 	UnitAction m_unitAction;
 
@@ -34,7 +43,7 @@ public class UnitManager : MonoBehaviour
 
 	public GameObject TurnUnit => m_turnUnit;
 	public Phase GetPhase => m_phase;
-	public int Rount => m_round; 
+	public int Round => m_round; 
 	public List<GameObject> UnitList => m_unitList;
 	public List<GameObject> SpeedList => m_speedList;
 
@@ -61,6 +70,8 @@ public class UnitManager : MonoBehaviour
 			case Phase.Start:
 				//ターンユニットの更新
 				m_turnUnit = m_speedList.First();
+				m_turnUnitRotation = m_turnUnit.transform.rotation;
+				m_unitStatus.TextUnitStatus(m_turnUnit.GetComponent<Unit>());
 
 				//アクションバーの見た目を新しくする
 				for (int i = 0; i < m_image.Length; i++)
@@ -81,7 +92,8 @@ public class UnitManager : MonoBehaviour
 
 			case Phase.Enemy:
 				//今は仮置きとしてターン終了
-				SetPhase(Phase.End);
+				GetComponent<EnemyAI>().ExecuteEnemyTurn(m_turnUnit.GetComponent<Unit>());
+                SetPhase(Phase.End);
 				break;
 
 			case Phase.End:
@@ -115,9 +127,13 @@ public class UnitManager : MonoBehaviour
 						actionBar.SetActive(true);
 					}
 				}
-				//フェーズを最初に戻す
-				SetPhase(Phase.Start);
-				break;
+
+				//とりあえずマジックナンバー　ダメージの表示のための難病表示するか処理のため
+                _ = DelayDisplay(destroyCancellationToken, 3);
+
+                //フェーズを最初に戻す
+                SetPhase(Phase.Start);
+                break;
 		}
 	}
 
@@ -173,4 +189,12 @@ public class UnitManager : MonoBehaviour
 		m_speedList[num].TryGetComponent(out unit);
 		return unit.Sprite;
 	}
+
+    private async ValueTask DelayDisplay(CancellationToken token, float num)
+    { 
+        await Awaitable.WaitForSecondsAsync(num, token);
+
+		//ダメージログを消す
+        m_uiController.GetComponent<Explanation>().EndExplanation();
+    }
 }

@@ -43,6 +43,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
     - {fileID: 11400000, guid: ba006f2c0b9137040a3dc151f8486b2e, type: 2}
     - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
+    - {fileID: 11400000, guid: fd4d577508f285f4b929f41c041cb86e, type: 2}
     attackSkillList:
     - {fileID: 11400000, guid: 9c299fe8e1f64134795c273fa408b822, type: 2}
     - {fileID: 11400000, guid: ed173aaf28a9e584ca37f68c693d90d2, type: 2}
